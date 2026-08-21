@@ -1,0 +1,38 @@
+---
+import { Image } from "astro:assets";
+import type { NewsItem } from "../content/fallback";
+
+interface Props {
+  item: NewsItem;
+  href: string;
+  featured?: boolean;
+}
+
+const { item, href, featured = false } = Astro.props;
+const date = new Date(item.publishedAt).toLocaleDateString(undefined, {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<a href={href} class:list={["group block", featured && "md:col-span-2"]} data-astro-prefetch>
+  <article class:list={["grid gap-6", featured && "md:grid-cols-2 md:gap-10"]}>
+    <div class:list={["overflow-hidden rounded-2xl", featured ? "aspect-[16/10]" : "aspect-[16/11]"]}>
+      <Image
+        src={item.image}
+        alt={item.imageAlt}
+        width={featured ? 1200 : 800}
+        height={featured ? 750 : 550}
+        class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
+      />
+    </div>
+    <div class="flex flex-col justify-center">
+      <p class="text-xs uppercase tracking-[0.25em] text-sage">{date}</p>
+      <h3 class:list={["mt-3 font-serif leading-tight", featured ? "text-4xl md:text-5xl" : "text-2xl"]}>
+        {item.title}
+      </h3>
+      <p class="mt-4 max-w-xl text-sm leading-relaxed text-charcoal/70 dark:text-soft/70">{item.excerpt}</p>
+    </div>
+  </article>
+</a>

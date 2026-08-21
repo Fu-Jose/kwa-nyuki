@@ -1,0 +1,55 @@
+---
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import type { Lang } from "../i18n/ui";
+import { localizedPath, useTranslations } from "../i18n/utils";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const links = [
+  { href: localizedPath(lang, "/"), label: t.nav.home },
+  { href: localizedPath(lang, "/products/"), label: t.nav.products },
+  { href: localizedPath(lang, "/news/"), label: t.nav.news },
+  { href: localizedPath(lang, "/contact/"), label: t.nav.contact },
+];
+---
+
+<div
+  id="mobile-menu"
+  class="fixed inset-0 z-40 hidden"
+  data-open="false"
+>
+  <div class="absolute inset-0 bg-wax/80 backdrop-blur-2xl dark:bg-midnight/85"></div>
+  <div class="relative flex h-full flex-col px-8 pb-10 pt-28">
+    <nav class="flex flex-1 flex-col justify-center gap-2" aria-label="Mobile">
+      {
+        links.map((link, index) => (
+          <a
+            href={link.href}
+            class="menu-item font-serif text-5xl leading-tight text-charcoal dark:text-soft sm:text-6xl"
+            style={`--delay: ${index * 70}ms`}
+            data-astro-prefetch
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+    <LanguageSwitcher lang={lang} className="justify-center pb-[env(safe-area-inset-bottom)]" />
+  </div>
+</div>
+
+<style>
+  #mobile-menu[data-open="true"] {
+    display: block;
+  }
+
+  #mobile-menu[data-open="true"] .menu-item {
+    animation: menu-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--delay);
+  }
+</style>

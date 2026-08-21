@@ -1,0 +1,29 @@
+---
+import { Image } from "astro:assets";
+import type { Product } from "../content/fallback";
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+---
+
+<article class="group overflow-hidden rounded-2xl bg-white shadow-[0_10px_40px_-24px_rgba(45,41,38,0.35)] transition duration-500 hover:-translate-y-1.5 dark:bg-card-dark">
+  <div class="aspect-[4/5] overflow-hidden">
+    <Image
+      src={product.image}
+      alt={product.imageAlt}
+      width={800}
+      height={1000}
+      class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
+    />
+  </div>
+  <div class="space-y-2 p-6">
+    <div class="flex items-baseline justify-between gap-4">
+      <h3 class="font-serif text-2xl">{product.title}</h3>
+      <span class="text-sm text-honey dark:text-honey-bright">{product.price}</span>
+    </div>
+    <p class="text-sm leading-relaxed text-charcoal/70 dark:text-soft/70">{product.excerpt}</p>
+  </div>
+</article>

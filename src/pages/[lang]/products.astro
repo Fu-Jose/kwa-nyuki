@@ -1,0 +1,35 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ProductCard from "../../components/ProductCard.astro";
+import { locales, type Lang } from "../../i18n/ui";
+import { isLang, useTranslations } from "../../i18n/utils";
+import { getProducts, getSiteSettings } from "../../lib/sanity.ts";
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+
+const { lang: rawLang } = Astro.params;
+if (!isLang(rawLang)) return Astro.redirect("/it/products/");
+const lang = rawLang as Lang;
+const t = useTranslations(lang);
+const [items, settings] = await Promise.all([getProducts(lang), getSiteSettings()]);
+---
+
+<Layout lang={lang} title={t.nav.products} settings={settings}>
+  <section class="mx-auto max-w-6xl px-5 pb-24 pt-32 md:px-8">
+    <p class="text-xs uppercase tracking-[0.3em] text-sage">{t.products.kicker}</p>
+    <h1 class="mt-4 font-serif text-5xl md:text-6xl">{t.products.title}</h1>
+    {
+      items.length ? (
+        <div class="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {items.map((product) => (
+            <ProductCard product={product} />
+          ))}
+        </div>
+      ) : (
+        <p class="mt-12 text-charcoal/70 dark:text-soft/70">{t.products.empty}</p>
+      )
+    }
+  </section>
+</Layout>

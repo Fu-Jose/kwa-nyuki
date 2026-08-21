@@ -1,0 +1,150 @@
+---
+import Logo from "./Logo.astro";
+import MobileMenu from "./MobileMenu.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import type { Lang } from "../i18n/ui";
+import { localizedPath, useTranslations } from "../i18n/utils";
+
+interface Props {
+  lang: Lang;
+  transparent?: boolean;
+}
+
+const { lang, transparent = false } = Astro.props;
+const t = useTranslations(lang);
+
+const links = [
+  { href: localizedPath(lang, "/"), label: t.nav.home },
+  { href: localizedPath(lang, "/products/"), label: t.nav.products },
+  { href: localizedPath(lang, "/news/"), label: t.nav.news },
+  { href: localizedPath(lang, "/contact/"), label: t.nav.contact },
+];
+---
+
+<header
+  id="site-header"
+  data-transparent={transparent ? "true" : "false"}
+  class="fixed inset-x-0 top-0 z-50 text-charcoal transition-[background-color,backdrop-filter,border-color] duration-500 dark:text-soft"
+>
+  <div
+    class="mx-auto flex h-20 max-w-6xl items-center justify-between px-5 md:px-8"
+  >
+    <a href={localizedPath(lang, "/")} class="relative z-50" data-astro-prefetch>
+      <Logo />
+    </a>
+
+    <nav class="hidden items-center gap-8 text-sm tracking-[0.18em] uppercase md:flex" aria-label="Primary">
+      {
+        links.map((link) => (
+          <a href={link.href} class="transition-opacity hover:opacity-70" data-astro-prefetch>
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="relative z-50 flex items-center gap-1">
+      <LanguageSwitcher lang={lang} className="hidden md:flex" />
+      <ThemeToggle lang={lang} />
+      <button
+        type="button"
+        id="menu-toggle"
+        class="relative z-50 grid size-11 place-items-center md:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label={t.menu.open}
+        data-open-label={t.menu.open}
+        data-close-label={t.menu.close}
+      >
+        <span class="hamburger" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<MobileMenu lang={lang} />
+
+<style>
+  .hamburger {
+    display: grid;
+    gap: 5px;
+    width: 22px;
+  }
+
+  .hamburger span {
+    display: block;
+    height: 1.5px;
+    width: 100%;
+    background: currentColor;
+    transition: transform 0.35s ease, opacity 0.25s ease;
+    transform-origin: center;
+  }
+
+  #menu-toggle[aria-expanded="true"] .hamburger span:nth-child(1) {
+    transform: translateY(6.5px) rotate(45deg);
+  }
+
+  #menu-toggle[aria-expanded="true"] .hamburger span:nth-child(2) {
+    opacity: 0;
+  }
+
+  #menu-toggle[aria-expanded="true"] .hamburger span:nth-child(3) {
+    transform: translateY(-6.5px) rotate(-45deg);
+  }
+</style>
+
+<script>
+  const navWindow = window as Window & {
+    __kwaNavAbort?: AbortController;
+    __kwaNavBound?: boolean;
+  };
+
+  function bindNav() {
+    const header = document.getElementById("site-header");
+    const toggle = document.getElementById("menu-toggle");
+    const menu = document.getElementById("mobile-menu");
+    if (!header || !toggle || !menu) return;
+
+    navWindow.__kwaNavAbort?.abort();
+    navWindow.__kwaNavAbort = new AbortController();
+    const { signal } = navWindow.__kwaNavAbort;
+
+    const onScroll = () => {
+      header.classList.toggle("is-scrolled", window.scrollY > 24);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true, signal });
+
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute(
+        "aria-label",
+        open ? toggle.dataset.closeLabel ?? "Close" : toggle.dataset.openLabel ?? "Open",
+      );
+      menu.dataset.open = String(open);
+      document.body.style.overflow = open ? "hidden" : "";
+      if (open) header.classList.add("is-scrolled");
+      else onScroll();
+    };
+
+    toggle.addEventListener(
+      "click",
+      () => setOpen(toggle.getAttribute("aria-expanded") !== "true"),
+      { signal },
+    );
+    menu.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => setOpen(false), { signal });
+    });
+  }
+
+  bindNav();
+  if (!navWindow.__kwaNavBound) {
+    navWindow.__kwaNavBound = true;
+    document.addEventListener("astro:page-load", bindNav);
+  }
+</script>

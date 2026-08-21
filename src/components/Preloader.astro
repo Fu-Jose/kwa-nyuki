@@ -1,0 +1,86 @@
+---
+import Logo from "./Logo.astro";
+
+interface Props {
+  videoId?: string;
+}
+
+const { videoId = "hero-video" } = Astro.props;
+---
+
+<div
+  id="preloader"
+  class="fixed inset-0 z-[80] flex items-center justify-center bg-wax dark:bg-midnight"
+>
+  <div class="preloader-panel preloader-top bg-wax dark:bg-midnight"></div>
+  <div class="preloader-panel preloader-bottom bg-wax dark:bg-midnight"></div>
+  <div class="relative z-10" id="preloader-logo">
+    <Logo className="scale-110" />
+  </div>
+</div>
+
+<style>
+  .preloader-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 50%;
+    transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+
+  .preloader-top {
+    top: 0;
+  }
+
+  .preloader-bottom {
+    bottom: 0;
+  }
+
+  #preloader.is-done .preloader-top {
+    transform: translateY(-100%);
+  }
+
+  #preloader.is-done .preloader-bottom {
+    transform: translateY(100%);
+  }
+
+  #preloader.is-done #preloader-logo {
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  #preloader.is-gone {
+    pointer-events: none;
+    visibility: hidden;
+  }
+</style>
+
+<script define:vars={{ videoId }}>
+  function runPreloader() {
+    const preloader = document.getElementById("preloader");
+    const video = document.getElementById(videoId);
+    if (!preloader) return;
+
+    const finish = () => {
+      preloader.classList.add("is-done");
+      window.setTimeout(() => preloader.classList.add("is-gone"), 950);
+    };
+
+    const fallback = window.setTimeout(finish, 4000);
+
+    if (video instanceof HTMLVideoElement) {
+      const ready = () => {
+        window.clearTimeout(fallback);
+        finish();
+      };
+      if (video.readyState >= 4) ready();
+      else video.addEventListener("canplaythrough", ready, { once: true });
+    } else {
+      window.clearTimeout(fallback);
+      finish();
+    }
+  }
+
+  runPreloader();
+  document.addEventListener("astro:after-swap", runPreloader);
+</script>

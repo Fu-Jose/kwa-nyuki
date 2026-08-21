@@ -1,0 +1,114 @@
+@import "tailwindcss";
+@import "@fontsource-variable/fraunces/wght.css";
+@import "@fontsource-variable/inter";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-serif: "Fraunces Variable", "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-honey: #e3a638;
+  --color-honey-bright: #f2b84b;
+  --color-wax: #fcf9f2;
+  --color-charcoal: #2d2926;
+  --color-sage: #4a5d4e;
+  --color-midnight: #121212;
+  --color-soft: #e0e0e0;
+  --color-card-dark: #1e1e1e;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  html,
+  body {
+    @apply min-h-dvh bg-wax text-charcoal antialiased dark:bg-midnight dark:text-soft;
+    font-family: var(--font-sans);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-serif);
+    font-optical-sizing: auto;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-honey) 40%, transparent);
+  }
+
+  #site-header .logo-word {
+    color: var(--color-charcoal);
+  }
+
+  .dark #site-header .logo-word {
+    color: var(--color-soft);
+  }
+
+  #site-header[data-transparent="true"]:not(.is-scrolled) {
+    color: #fff;
+  }
+
+  #site-header[data-transparent="true"]:not(.is-scrolled) .logo-word {
+    color: #fff;
+  }
+
+  #site-header.is-scrolled {
+    background: color-mix(in srgb, var(--color-wax) 78%, transparent);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgb(45 41 38 / 0.08);
+  }
+
+  .dark #site-header.is-scrolled {
+    background: color-mix(in srgb, var(--color-midnight) 78%, transparent);
+    border-bottom-color: rgb(255 255 255 / 0.08);
+  }
+}
+
+@utility glass {
+  @apply border-white/20 bg-white/10 backdrop-blur-xl dark:border-white/10 dark:bg-black/30;
+}
+
+@keyframes menu-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes story-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.menu-link-enter {
+  animation: menu-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.reveal-on-scroll.is-visible {
+  animation: story-reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.45s;
+}

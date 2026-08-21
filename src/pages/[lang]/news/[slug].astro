@@ -1,0 +1,41 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { Image } from "astro:assets";
+import { locales, type Lang } from "../../../i18n/ui";
+import { isLang, localizedPath, useTranslations } from "../../../i18n/utils";
+import { getNews, getNewsBySlug, getSiteSettings } from "../../../lib/sanity.ts";
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const lang of locales) {
+    const items = await getNews(lang);
+    for (const item of items) {
+      paths.push({ params: { lang, slug: item.slug } });
+    }
+  }
+  return paths;
+}
+
+const { lang: rawLang, slug } = Astro.params;
+if (!isLang(rawLang) || !slug) return Astro.redirect("/it/news/");
+const lang = rawLang as Lang;
+const t = useTranslations(lang);
+const [item, settings] = await Promise.all([getNewsBySlug(lang, slug), getSiteSettings()]);
+if (!item) return Astro.redirect(localizedPath(lang, "/news/"));
+const date = new Date(item.publishedAt).toLocaleDateString(lang, {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<Layout lang={lang} title={item.title} description={item.excerpt} settings={settings}>
+  <article class="mx-auto max-w-3xl px-5 pb-24 pt-32 md:px-8">
+    <p class="text-xs uppercase tracking-[0.25em] text-sage">{date}</p>
+    <h1 class="mt-4 font-serif text-4xl leading-tight md:text-6xl">{item.title}</h1>
+    <div class="mt-10 overflow-hidden rounded-3xl">
+      <Image src={item.image} alt={item.imageAlt} width={1200} height={800} class="w-full object-cover" />
+    </div>
+    <p class="mt-10 text-lg leading-9 text-charcoal/80 dark:text-soft/80">{item.body}</p>
+  </article>
+</Layout>

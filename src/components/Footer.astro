@@ -1,0 +1,78 @@
+---
+import Logo from './Logo.astro';
+import type { Lang } from '../i18n/ui';
+import { localizedPath, useTranslations } from '../i18n/utils';
+import type { SiteSettings } from '../content/fallback';
+
+interface Props {
+  lang: Lang;
+  settings: SiteSettings;
+}
+
+const { lang, settings } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<footer
+  class='border-t border-charcoal/10 bg-wax px-5 py-16 dark:border-white/10 dark:bg-midnight'
+>
+  <div
+    class='mx-auto flex max-w-6xl flex-col gap-10 md:flex-row md:items-end md:justify-between'
+  >
+    <div>
+      <a href={localizedPath(lang, '/')}>
+        <Logo />
+      </a>
+      <p class='mt-4 max-w-sm text-sm text-charcoal/70 dark:text-soft/70'>
+        {t.footer.note}
+      </p>
+    </div>
+    <div class='flex items-center gap-4'>
+      {
+        settings.instagram && (
+          <a
+            href={settings.instagram}
+            class='rounded-full border border-current/15 p-3'
+            aria-label='Instagram'
+          >
+            <svg
+              class='size-6'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='currentColor'
+              stroke-width='2'
+              aria-hidden='true'
+            >
+              <rect x='3' y='3' width='18' height='18' rx='5' />
+              <circle cx='12' cy='12' r='4' />
+              <circle cx='17.5' cy='6.5' r='0.8' fill='currentColor' />
+            </svg>
+          </a>
+        )
+      }
+      {
+        settings.facebook && (
+          <a
+            href={settings.facebook}
+            class='rounded-full border border-current/15 p-3'
+            aria-label='Facebook'
+          >
+            <svg
+              class='size-6'
+              viewBox='0 0 24 24'
+              fill='currentColor'
+              aria-hidden='true'
+            >
+              <path d='M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z' />
+            </svg>
+          </a>
+        )
+      }
+    </div>
+  </div>
+  <p
+    class='mx-auto mt-12 max-w-6xl text-xs tracking-wide text-charcoal/50 dark:text-soft/40'
+  >
+    © {new Date().getFullYear()} Kwa Nyuki. {t.footer.rights}
+  </p>
+</footer>

@@ -1,0 +1,66 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import HeroVideo from "../../components/HeroVideo.astro";
+import Preloader from "../../components/Preloader.astro";
+import { Image } from "astro:assets";
+import { locales, type Lang } from "../../i18n/ui";
+import { isLang, localizedPath, useTranslations } from "../../i18n/utils";
+import { getSiteSettings } from "../../lib/sanity.ts";
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+
+const { lang: rawLang } = Astro.params;
+if (!isLang(rawLang)) return Astro.redirect("/it/");
+const lang = rawLang as Lang;
+const t = useTranslations(lang);
+const settings = await getSiteSettings();
+const farmImage =
+  "https://images.unsplash.com/photo-1473973266408-ed4e27abdd47?auto=format&fit=crop&q=80&w=1200";
+---
+
+<Layout lang={lang} title={t.nav.home} transparentNav settings={settings}>
+  <Preloader />
+  <HeroVideo
+    src={settings.heroVideoUrl}
+    poster={settings.heroPoster}
+    kicker={t.hero.kicker}
+    title={t.hero.title}
+    subtitle={t.hero.subtitle}
+    ctaLabel={t.hero.cta}
+    ctaHref={localizedPath(lang, "/products/")}
+  />
+
+  <section id="story" class="mx-auto grid max-w-6xl gap-12 px-5 py-24 md:grid-cols-2 md:items-center md:px-8 md:py-32">
+    <div class="reveal-on-scroll overflow-hidden rounded-3xl">
+      <Image
+        src={farmImage}
+        alt={t.story.title}
+        width={1200}
+        height={900}
+        class="h-full w-full object-cover"
+      />
+    </div>
+    <div class="reveal-on-scroll" style="animation-delay: 120ms">
+      <p class="text-xs uppercase tracking-[0.3em] text-sage">{t.story.kicker}</p>
+      <h2 class="mt-4 font-serif text-4xl md:text-5xl">{t.story.title}</h2>
+      <p class="mt-6 max-w-md text-base leading-8 text-charcoal/75 dark:text-soft/75">{t.story.body}</p>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import { animate, inView } from "motion";
+
+  function bindStory() {
+    document.querySelectorAll<HTMLElement>(".reveal-on-scroll").forEach((el) => {
+      inView(el, () => {
+        animate(el, { opacity: [0, 1], y: [40, 0] }, { duration: 0.8, easing: [0.22, 1, 0.36, 1] });
+      });
+    });
+  }
+
+  bindStory();
+  document.addEventListener("astro:after-swap", bindStory);
+</script>

@@ -1,0 +1,32 @@
+---
+import { languages, locales, type Lang } from "../i18n/ui";
+import { switchLangPath } from "../i18n/utils";
+
+interface Props {
+  lang: Lang;
+  className?: string;
+}
+
+const { lang, className = "" } = Astro.props;
+const currentPath = Astro.url.pathname;
+---
+
+<nav class:list={["flex items-center gap-4 text-sm tracking-[0.2em]", className]} aria-label="Languages">
+  {
+    locales.map((code) => (
+      <a
+        href={switchLangPath(currentPath, code)}
+        class:list={[
+          "transition-colors",
+          code === lang
+            ? "text-honey dark:text-honey-bright"
+            : "text-current/55 hover:text-current",
+        ]}
+        hreflang={code}
+        aria-current={code === lang ? "true" : undefined}
+      >
+        {languages[code]}
+      </a>
+    ))
+  }
+</nav>

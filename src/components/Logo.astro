@@ -1,0 +1,27 @@
+---
+interface Props {
+  className?: string;
+}
+
+const { className = "" } = Astro.props;
+---
+
+<div class:list={["flex items-center gap-2 font-serif font-bold text-2xl", className]}>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="32"
+    height="32"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="text-honey dark:text-honey-bright"
+    aria-hidden="true"
+  >
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+    <path d="m8 10 4 4 4-4"></path>
+  </svg>
+  <span><span class="logo-word">KWA</span> <span class="text-honey dark:text-honey-bright">NYUKI</span></span>
+</div>

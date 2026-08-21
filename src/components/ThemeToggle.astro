@@ -1,0 +1,23 @@
+---
+import { Moon, Sun } from "@lucide/astro";
+import type { Lang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<button
+  type="button"
+  class="theme-toggle grid size-10 place-items-center rounded-full text-current transition hover:bg-black/5 dark:hover:bg-white/10"
+  aria-label={t.theme.dark}
+  data-label-light={t.theme.light}
+  data-label-dark={t.theme.dark}
+>
+  <Sun class="size-5 dark:hidden" />
+  <Moon class="hidden size-5 dark:block" />
+</button>
