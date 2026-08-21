@@ -114,11 +114,30 @@ const links = [
     navWindow.__kwaNavAbort = new AbortController();
     const { signal } = navWindow.__kwaNavAbort;
 
-    const onScroll = () => {
-      header.classList.toggle("is-scrolled", window.scrollY > 24);
+    let isHovered = false;
+    let isMenuOpen = false;
+
+    const updateScrolled = () => {
+      header.classList.toggle("is-scrolled", window.scrollY > 24 || isHovered || isMenuOpen);
     };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true, signal });
+    updateScrolled();
+    window.addEventListener("scroll", updateScrolled, { passive: true, signal });
+    header.addEventListener(
+      "mouseenter",
+      () => {
+        isHovered = true;
+        updateScrolled();
+      },
+      { signal },
+    );
+    header.addEventListener(
+      "mouseleave",
+      () => {
+        isHovered = false;
+        updateScrolled();
+      },
+      { signal },
+    );
 
     const setOpen = (open: boolean) => {
       toggle.setAttribute("aria-expanded", String(open));
@@ -128,8 +147,8 @@ const links = [
       );
       menu.dataset.open = String(open);
       document.body.style.overflow = open ? "hidden" : "";
-      if (open) header.classList.add("is-scrolled");
-      else onScroll();
+      isMenuOpen = open;
+      updateScrolled();
     };
 
     toggle.addEventListener(

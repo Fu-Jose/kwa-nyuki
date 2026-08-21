@@ -60,12 +60,13 @@
   #site-header.is-scrolled {
     background: color-mix(in srgb, var(--color-wax) 78%, transparent);
     backdrop-filter: blur(18px);
-    border-bottom: 1px solid rgb(45 41 38 / 0.08);
+    /* box-shadow instead of border-bottom: avoids the uneven fade backdrop-filter causes on translucent borders */
+    box-shadow: 0 1px 0 0 rgb(45 41 38 / 0.08);
   }
 
   .dark #site-header.is-scrolled {
     background: color-mix(in srgb, var(--color-midnight) 78%, transparent);
-    border-bottom-color: rgb(255 255 255 / 0.08);
+    box-shadow: 0 1px 0 0 rgb(255 255 255 / 0.08);
   }
 }
 
