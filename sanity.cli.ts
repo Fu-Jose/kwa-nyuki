@@ -5,4 +5,7 @@ export default defineCliConfig({
     projectId: process.env.PUBLIC_SANITY_PROJECT_ID || "placeholder",
     dataset: process.env.PUBLIC_SANITY_DATASET || "production",
   },
+  deployment: {
+    appId: 'g608elryc7urta327oav755l',
+  },
 });

@@ -17,7 +17,12 @@ const [items, settings] = await Promise.all([getNews(lang), getSiteSettings()]);
 const [featured, ...rest] = items;
 ---
 
-<Layout lang={lang} title={t.nav.news} settings={settings}>
+<Layout
+  lang={lang}
+  title={t.nav.news}
+  description={`${t.news.kicker} · ${t.news.title}`}
+  settings={settings}
+>
   <section class="mx-auto max-w-6xl px-5 pb-24 pt-32 md:px-8">
     <p class="text-xs uppercase tracking-[0.3em] text-sage">{t.news.kicker}</p>
     <h1 class="mt-4 font-serif text-5xl md:text-6xl">{t.news.title}</h1>

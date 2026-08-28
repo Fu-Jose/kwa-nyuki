@@ -18,3 +18,13 @@ export function switchLangPath(currentPath: string, nextLang: Lang) {
   const rest = isLang(segments[0]) ? segments.slice(1) : segments;
   return localizedPath(nextLang, rest.join("/"));
 }
+
+export function getNavLinks(lang: Lang) {
+  const t = useTranslations(lang);
+  return [
+    { href: localizedPath(lang, "/"), label: t.nav.home },
+    { href: localizedPath(lang, "/products/"), label: t.nav.products },
+    { href: localizedPath(lang, "/news/"), label: t.nav.news },
+    { href: localizedPath(lang, "/contact/"), label: t.nav.contact },
+  ];
+}

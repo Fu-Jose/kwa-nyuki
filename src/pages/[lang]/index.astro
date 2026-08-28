@@ -20,7 +20,13 @@ const farmImage =
   "https://images.unsplash.com/photo-1473973266408-ed4e27abdd47?auto=format&fit=crop&q=80&w=1200";
 ---
 
-<Layout lang={lang} title={t.nav.home} transparentNav settings={settings}>
+<Layout
+  lang={lang}
+  title={t.hero.title}
+  description={t.hero.subtitle}
+  transparentNav
+  settings={settings}
+>
   <Preloader />
   <HeroVideo
     src={settings.heroVideoUrl}

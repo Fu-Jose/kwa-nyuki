@@ -3,9 +3,9 @@ import { ClientRouter } from "astro:transitions";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 import "../styles/global.css";
-import type { Lang } from "../i18n/ui";
+import { locales, defaultLang, type Lang } from "../i18n/ui";
 import type { SiteSettings } from "../content/fallback";
-import { useTranslations } from "../i18n/utils";
+import { switchLangPath, useTranslations } from "../i18n/utils";
 
 interface Props {
   lang: Lang;
@@ -13,10 +13,68 @@ interface Props {
   description?: string;
   transparentNav?: boolean;
   settings: SiteSettings;
+  /** Absolute or root-relative image used for Open Graph / Twitter cards. Defaults to the site's hero poster. */
+  image?: string;
+  /** Open Graph type. Use "article" on blog/news detail pages. */
+  type?: "website" | "article";
+  /**
+   * Per-language paths (root-relative, e.g. "/en/news/spring-harvest/") for hreflang alternates.
+   * Omit on pages whose path shape is identical across languages (home, products, contact, news index) —
+   * it is then derived automatically. Pages with per-language slugs (e.g. a news article) MUST pass this
+   * explicitly, since guessing a translated slug would produce a broken hreflang link.
+   */
+  alternates?: Partial<Record<Lang, string>>;
+  /** Set true on pages that should not be indexed (e.g. a 404). */
+  noindex?: boolean;
+  /** One or more JSON-LD structured data objects to embed. */
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
+  /** Set true to omit the site Navbar/Footer chrome (e.g. a standalone error page). */
+  hideChrome?: boolean;
 }
 
-const { lang, title, description, transparentNav = false, settings } = Astro.props;
+const {
+  lang,
+  title,
+  description,
+  transparentNav = false,
+  settings,
+  image,
+  type = "website",
+  alternates,
+  noindex = false,
+  structuredData,
+  hideChrome = false,
+} = Astro.props;
 const t = useTranslations(lang);
+
+const canonicalPath = Astro.url.pathname;
+const canonicalURL = new URL(canonicalPath, Astro.site);
+const metaDescription = description ?? t.footer.note;
+const ogImage = image ?? settings.heroPoster;
+
+// hreflang alternates: explicit per-language paths win; otherwise assume the
+// path shape is shared across languages and just swap the /lang/ segment.
+const alternateEntries: [Lang, string][] = alternates
+  ? (Object.entries(alternates) as [Lang, string][])
+  : locales.map((code) => [code, switchLangPath(canonicalPath, code)]);
+const xDefaultPath = alternates ? canonicalPath : switchLangPath(canonicalPath, defaultLang);
+
+const jsonLdBlocks = structuredData ? (Array.isArray(structuredData) ? structuredData : [structuredData]) : [];
+
+const localBusinessJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: t.brand,
+  description: t.footer.note,
+  url: Astro.site?.toString(),
+  email: t.contact.email,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: t.contact.address,
+  },
+  openingHours: t.contact.hours,
+  sameAs: [settings.instagram, settings.facebook].filter(Boolean),
+};
 ---
 
 <!doctype html>
@@ -26,8 +84,37 @@ const t = useTranslations(lang);
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="description" content={description ?? t.footer.note} />
+    <meta name="description" content={metaDescription} />
+    <meta name="robots" content={noindex ? "noindex, follow" : "index, follow"} />
+    <link rel="canonical" href={canonicalURL} />
+    {
+      alternateEntries.map(([code, path]) => (
+        <link rel="alternate" hreflang={code} href={new URL(path, Astro.site)} />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={new URL(xDefaultPath, Astro.site)} />
+
+    <link rel="preconnect" href="https://cdn.sanity.io" />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="preconnect" href="https://videos.pexels.com" />
+
     <title>{title} · {t.brand}</title>
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={t.brand} />
+    <meta property="og:locale" content={lang} />
+    <meta property="og:title" content={`${title} · ${t.brand}`} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} · ${t.brand}`} />
+    <meta name="twitter:description" content={metaDescription} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(localBusinessJsonLd)} />
+    {jsonLdBlocks.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}
+
     <script is:inline>
       (function () {
         const stored = localStorage.getItem("theme");
@@ -39,11 +126,11 @@ const t = useTranslations(lang);
     <ClientRouter />
   </head>
   <body class="font-sans">
-    <Navbar lang={lang} transparent={transparentNav} />
+    {!hideChrome && <Navbar lang={lang} transparent={transparentNav} />}
     <main transition:animate="fade">
       <slot />
     </main>
-    <Footer lang={lang} settings={settings} />
+    {!hideChrome && <Footer lang={lang} settings={settings} />}
     <script>
       const themeWindow = window as Window & { __kwaThemeBound?: boolean };
 

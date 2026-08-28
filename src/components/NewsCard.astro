@@ -24,6 +24,8 @@ const date = new Date(item.publishedAt).toLocaleDateString(undefined, {
         alt={item.imageAlt}
         width={featured ? 1200 : 800}
         height={featured ? 750 : 550}
+        loading={featured ? "eager" : "lazy"}
+        fetchpriority={featured ? "high" : "auto"}
         class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
       />
     </div>

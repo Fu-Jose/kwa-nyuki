@@ -1,21 +1,14 @@
 ---
 import LanguageSwitcher from "./LanguageSwitcher.astro";
 import type { Lang } from "../i18n/ui";
-import { localizedPath, useTranslations } from "../i18n/utils";
+import { getNavLinks } from "../i18n/utils";
 
 interface Props {
   lang: Lang;
 }
 
 const { lang } = Astro.props;
-const t = useTranslations(lang);
-
-const links = [
-  { href: localizedPath(lang, "/"), label: t.nav.home },
-  { href: localizedPath(lang, "/products/"), label: t.nav.products },
-  { href: localizedPath(lang, "/news/"), label: t.nav.news },
-  { href: localizedPath(lang, "/contact/"), label: t.nav.contact },
-];
+const links = getNavLinks(lang);
 ---
 
 <div

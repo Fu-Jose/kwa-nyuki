@@ -1,0 +1,70 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Logo from "../components/Logo.astro";
+import { defaultLang, locales, type Lang } from "../i18n/ui";
+import { localizedPath, useTranslations } from "../i18n/utils";
+import { getSiteSettings } from "../lib/sanity.ts";
+
+// Astro builds a single static 404.html for the whole site — there is no
+// per-language route for it — so it always renders server-side in the
+// default language. The copy for every language is embedded below, and a
+// small client-side script swaps it in once it can read the real browser
+// URL (e.g. a broken link under /en/... or /fr/...), so visitors land on
+// the page in their own language even though the server always shipped it.
+const lang = defaultLang;
+const t = useTranslations(lang);
+const settings = await getSiteSettings();
+
+type NotFoundCopy = { kicker: string; title: string; cta: string; home: string };
+
+const copy = Object.fromEntries(
+  locales.map((code) => {
+    const nf = useTranslations(code).notFound;
+    return [code, { kicker: nf.kicker, title: nf.title, cta: nf.cta, home: localizedPath(code, "/") }];
+  }),
+) as Record<Lang, NotFoundCopy>;
+---
+
+<Layout
+  lang={lang}
+  title={t.notFound.title}
+  noindex
+  hideChrome
+  settings={settings}
+  alternates={{ [lang]: Astro.url.pathname }}
+>
+  <section class="mx-auto flex min-h-dvh max-w-xl flex-col items-center justify-center px-5 py-24 text-center md:px-8">
+    <Logo className="scale-110" />
+    <p id="nf-kicker" class="mt-10 text-xs uppercase tracking-[0.3em] text-sage">{t.notFound.kicker}</p>
+    <h1 id="nf-title" class="mt-4 font-serif text-4xl leading-tight md:text-6xl">{t.notFound.title}</h1>
+    <a
+      id="nf-home-link"
+      href={localizedPath(lang, "/")}
+      class="mt-10 inline-flex items-center border border-charcoal/20 px-6 py-3 text-xs uppercase tracking-[0.25em] text-charcoal transition hover:bg-charcoal hover:text-wax dark:border-white/20 dark:text-soft dark:hover:bg-white dark:hover:text-midnight"
+    >
+      {t.notFound.cta}
+    </a>
+  </section>
+</Layout>
+
+<script define:vars={{ copy, locales, defaultLang }}>
+  const segment = location.pathname.split("/").filter(Boolean)[0];
+  const lang = locales.includes(segment) ? segment : defaultLang;
+  const data = copy[lang];
+
+  if (data && lang !== defaultLang) {
+    document.documentElement.lang = lang;
+    document.title = document.title.replace(copy[defaultLang].title, data.title);
+
+    const kicker = document.getElementById("nf-kicker");
+    const title = document.getElementById("nf-title");
+    const link = document.getElementById("nf-home-link");
+
+    if (kicker) kicker.textContent = data.kicker;
+    if (title) title.textContent = data.title;
+    if (link) {
+      link.textContent = data.cta;
+      link.setAttribute("href", data.home);
+    }
+  }
+</script>
