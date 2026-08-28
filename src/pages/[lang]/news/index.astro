@@ -32,11 +32,12 @@ const [featured, ...rest] = items;
           <NewsCard
             item={featured}
             href={localizedPath(lang, `/news/${featured.slug}/`)}
+            lang={lang}
             featured
           />
           <div class="grid gap-12 md:grid-cols-2">
             {rest.map((item) => (
-              <NewsCard item={item} href={localizedPath(lang, `/news/${item.slug}/`)} />
+              <NewsCard item={item} href={localizedPath(lang, `/news/${item.slug}/`)} lang={lang} />
             ))}
           </div>
         </div>

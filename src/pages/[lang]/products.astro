@@ -4,6 +4,7 @@ import ProductCard from "../../components/ProductCard.astro";
 import { locales, type Lang } from "../../i18n/ui";
 import { isLang, useTranslations } from "../../i18n/utils";
 import { getProducts, getSiteSettings } from "../../lib/sanity.ts";
+import { parsePrice } from "../../lib/price.ts";
 
 export function getStaticPaths() {
   return locales.map((lang) => ({ params: { lang } }));
@@ -14,17 +15,6 @@ if (!isLang(rawLang)) return Astro.redirect("/it/products/");
 const lang = rawLang as Lang;
 const t = useTranslations(lang);
 const [items, settings] = await Promise.all([getProducts(lang), getSiteSettings()]);
-
-// Best-effort "€18" -> { value: "18", currency: "EUR" } for schema.org Offer pricing.
-// Prices that don't match a known currency symbol are listed without an offer
-// rather than emitting incorrect structured data.
-function parsePrice(price: string): { value: string; currency: string } | null {
-  const match = price.match(/([€$£])\s*([\d.,]+)/);
-  if (!match) return null;
-  const currency = { "€": "EUR", $: "USD", "£": "GBP" }[match[1]];
-  if (!currency) return null;
-  return { value: match[2].replace(",", "."), currency };
-}
 
 const productsJsonLd = items.length
   ? {
