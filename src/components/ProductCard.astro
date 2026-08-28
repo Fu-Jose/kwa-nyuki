@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import type { Product } from "../content/fallback";
+import { formatPrice } from "../lib/price.ts";
 
 interface Props {
   product: Product;
@@ -22,7 +23,7 @@ const { product } = Astro.props;
   <div class="space-y-2 p-6">
     <div class="flex items-baseline justify-between gap-4">
       <h3 class="font-serif text-2xl">{product.title}</h3>
-      <span class="text-sm text-honey dark:text-honey-bright">{product.price}</span>
+      <span class="text-sm text-honey dark:text-honey-bright">{formatPrice(product.price)}</span>
     </div>
     <p class="text-sm leading-relaxed text-charcoal/70 dark:text-soft/70">{product.excerpt}</p>
   </div>

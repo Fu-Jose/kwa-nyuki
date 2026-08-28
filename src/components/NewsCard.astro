@@ -1,15 +1,17 @@
 ---
 import { Image } from "astro:assets";
 import type { NewsItem } from "../content/fallback";
+import type { Lang } from "../i18n/ui";
 
 interface Props {
   item: NewsItem;
   href: string;
+  lang: Lang;
   featured?: boolean;
 }
 
-const { item, href, featured = false } = Astro.props;
-const date = new Date(item.publishedAt).toLocaleDateString(undefined, {
+const { item, href, lang, featured = false } = Astro.props;
+const date = new Date(item.publishedAt).toLocaleDateString(lang, {
   year: "numeric",
   month: "long",
   day: "numeric",

@@ -5,8 +5,11 @@ import { unsplashImageAsset } from "sanity-plugin-asset-source-unsplash";
 import { documentInternationalization } from "@sanity/document-internationalization";
 import { news, product, siteSettings } from "./studio/schemaTypes";
 
-const projectId = process.env.PUBLIC_SANITY_PROJECT_ID || "placeholder";
-const dataset = process.env.PUBLIC_SANITY_DATASET || "production";
+// Sanity's own tooling only exposes env vars prefixed SANITY_STUDIO_ to the
+// Studio app bundle (the Astro site instead reads PUBLIC_-prefixed ones,
+// per Astro/Vite's convention — see src/lib/sanity.ts).
+const projectId = process.env.SANITY_STUDIO_PROJECT_ID || "placeholder";
+const dataset = process.env.SANITY_STUDIO_DATASET || "production";
 
 export default defineConfig({
   name: "kwa-nyuki",
