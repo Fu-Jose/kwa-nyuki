@@ -1,6 +1,6 @@
 import { createClient } from "@sanity/client";
 import groq from "groq";
-import imageUrlBuilder from "@sanity/image-url";
+import { createImageUrlBuilder } from "@sanity/image-url";
 import { news, products, siteSettings, type NewsItem, type Product, type SiteSettings } from "../content/fallback";
 import type { Lang } from "../i18n/ui";
 
@@ -18,7 +18,7 @@ export const client = projectId
     })
   : null;
 
-const builder = client ? imageUrlBuilder(client) : null;
+const builder = client ? createImageUrlBuilder(client) : null;
 
 export function urlFor(source: unknown) {
   return builder?.image(source as never);

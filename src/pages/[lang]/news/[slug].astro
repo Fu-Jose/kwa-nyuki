@@ -27,14 +27,43 @@ const date = new Date(item.publishedAt).toLocaleDateString(lang, {
   month: "long",
   day: "numeric",
 });
+
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: item.title,
+  description: item.excerpt,
+  image: item.image,
+  datePublished: item.publishedAt,
+  inLanguage: lang,
+  author: { "@type": "Organization", name: t.brand },
+  publisher: { "@type": "Organization", name: t.brand },
+};
 ---
 
-<Layout lang={lang} title={item.title} description={item.excerpt} settings={settings}>
+<Layout
+  lang={lang}
+  title={item.title}
+  description={item.excerpt}
+  image={item.image}
+  type="article"
+  settings={settings}
+  structuredData={articleJsonLd}
+  alternates={{ [lang]: Astro.url.pathname }}
+>
   <article class="mx-auto max-w-3xl px-5 pb-24 pt-32 md:px-8">
     <p class="text-xs uppercase tracking-[0.25em] text-sage">{date}</p>
     <h1 class="mt-4 font-serif text-4xl leading-tight md:text-6xl">{item.title}</h1>
     <div class="mt-10 overflow-hidden rounded-3xl">
-      <Image src={item.image} alt={item.imageAlt} width={1200} height={800} class="w-full object-cover" />
+      <Image
+        src={item.image}
+        alt={item.imageAlt}
+        width={1200}
+        height={800}
+        loading="eager"
+        fetchpriority="high"
+        class="w-full object-cover"
+      />
     </div>
     <p class="mt-10 text-lg leading-9 text-charcoal/80 dark:text-soft/80">{item.body}</p>
   </article>

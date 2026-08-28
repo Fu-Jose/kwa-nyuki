@@ -14,9 +14,54 @@ if (!isLang(rawLang)) return Astro.redirect("/it/products/");
 const lang = rawLang as Lang;
 const t = useTranslations(lang);
 const [items, settings] = await Promise.all([getProducts(lang), getSiteSettings()]);
+
+// Best-effort "€18" -> { value: "18", currency: "EUR" } for schema.org Offer pricing.
+// Prices that don't match a known currency symbol are listed without an offer
+// rather than emitting incorrect structured data.
+function parsePrice(price: string): { value: string; currency: string } | null {
+  const match = price.match(/([€$£])\s*([\d.,]+)/);
+  if (!match) return null;
+  const currency = { "€": "EUR", $: "USD", "£": "GBP" }[match[1]];
+  if (!currency) return null;
+  return { value: match[2].replace(",", "."), currency };
+}
+
+const productsJsonLd = items.length
+  ? {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      itemListElement: items.map((product, index) => {
+        const price = parsePrice(product.price);
+        return {
+          "@type": "ListItem",
+          position: index + 1,
+          item: {
+            "@type": "Product",
+            name: product.title,
+            description: product.excerpt,
+            image: product.image,
+            ...(price && {
+              offers: {
+                "@type": "Offer",
+                price: price.value,
+                priceCurrency: price.currency,
+                availability: "https://schema.org/InStock",
+              },
+            }),
+          },
+        };
+      }),
+    }
+  : undefined;
 ---
 
-<Layout lang={lang} title={t.nav.products} settings={settings}>
+<Layout
+  lang={lang}
+  title={t.nav.products}
+  description={`${t.products.kicker} · ${t.products.title}`}
+  settings={settings}
+  structuredData={productsJsonLd}
+>
   <section class="mx-auto max-w-6xl px-5 pb-24 pt-32 md:px-8">
     <p class="text-xs uppercase tracking-[0.3em] text-sage">{t.products.kicker}</p>
     <h1 class="mt-4 font-serif text-5xl md:text-6xl">{t.products.title}</h1>

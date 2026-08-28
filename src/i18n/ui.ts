@@ -64,6 +64,11 @@ export const ui = {
       open: "Open menu",
       close: "Close menu",
     },
+    notFound: {
+      kicker: "404",
+      title: "Page not found…",
+      cta: "Back to home",
+    },
   },
   it: {
     brand: "KWA NYUKI",
@@ -118,6 +123,11 @@ export const ui = {
       open: "Apri menu",
       close: "Chiudi menu",
     },
+    notFound: {
+      kicker: "404",
+      title: "Pagina non trovata…",
+      cta: "Torna alla home",
+    },
   },
   fr: {
     brand: "KWA NYUKI",
@@ -171,6 +181,11 @@ export const ui = {
     menu: {
       open: "Ouvrir le menu",
       close: "Fermer le menu",
+    },
+    notFound: {
+      kicker: "404",
+      title: "Page introuvable…",
+      cta: "Retour à l’accueil",
     },
   },
 } as const;
