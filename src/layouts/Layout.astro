@@ -61,6 +61,14 @@ const xDefaultPath = alternates ? canonicalPath : switchLangPath(canonicalPath, 
 
 const jsonLdBlocks = structuredData ? (Array.isArray(structuredData) ? structuredData : [structuredData]) : [];
 
+// CMS text (product/news titles, excerpts...) flows into this JSON unescaped.
+// Without this, a "<" the client types in Sanity — accidental or not — could
+// close the <script> tag early and inject markup. Escaping every "<" is safe:
+// JSON.parse still reads < back as "<".
+function toJsonLd(data: Record<string, unknown>) {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
 const localBusinessJsonLd = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
@@ -112,8 +120,8 @@ const localBusinessJsonLd = {
     <meta name="twitter:description" content={metaDescription} />
     <meta name="twitter:image" content={ogImage} />
 
-    <script type="application/ld+json" set:html={JSON.stringify(localBusinessJsonLd)} />
-    {jsonLdBlocks.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}
+    <script type="application/ld+json" set:html={toJsonLd(localBusinessJsonLd)} />
+    {jsonLdBlocks.map((data) => <script type="application/ld+json" set:html={toJsonLd(data)} />)}
 
     <script is:inline>
       (function () {
