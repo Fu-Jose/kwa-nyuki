@@ -26,8 +26,6 @@ The site ships with Unsplash/Pexels placeholders so it runs without CMS credenti
 3. Run Studio: `npm run studio`
 4. Products, News, and Site Settings (logo, social, hero video) are already modelled. Unsplash is available as an image source. Document translations cover `en`, `it`, and `fr`.
 
-A short editor guide lives at `/guida.html` (not in the sitemap).
-
 Rebuild on CMS updates with a Vercel or Netlify webhook from Sanity.
 
 ## Stack notes

@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /guida.html
 
 Sitemap: https://kwanyuki.it/sitemap-index.xml
