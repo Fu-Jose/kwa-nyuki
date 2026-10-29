@@ -4,14 +4,16 @@ import MobileMenu from "./MobileMenu.astro";
 import ThemeToggle from "./ThemeToggle.astro";
 import LanguageSwitcher from "./LanguageSwitcher.astro";
 import type { Lang } from "../i18n/ui";
+import type { SiteSettings } from "../content/fallback";
 import { getNavLinks, localizedPath, useTranslations } from "../i18n/utils";
 
 interface Props {
   lang: Lang;
   transparent?: boolean;
+  settings: SiteSettings;
 }
 
-const { lang, transparent = false } = Astro.props;
+const { lang, transparent = false, settings } = Astro.props;
 const t = useTranslations(lang);
 const links = getNavLinks(lang);
 ---
@@ -25,7 +27,7 @@ const links = getNavLinks(lang);
     class="mx-auto flex h-20 max-w-6xl items-center justify-between px-5 md:px-8"
   >
     <a href={localizedPath(lang, "/")} class="relative z-50" data-astro-prefetch>
-      <Logo />
+      <Logo src={settings.logo} alt={settings.logoAlt} />
     </a>
 
     <nav class="hidden items-center gap-8 text-sm tracking-[0.18em] uppercase md:flex" aria-label="Primary">

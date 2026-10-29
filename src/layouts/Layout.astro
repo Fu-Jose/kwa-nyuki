@@ -134,7 +134,7 @@ const localBusinessJsonLd = {
     <ClientRouter />
   </head>
   <body class="font-sans">
-    {!hideChrome && <Navbar lang={lang} transparent={transparentNav} />}
+    {!hideChrome && <Navbar lang={lang} transparent={transparentNav} settings={settings} />}
     <main transition:animate="fade">
       <slot />
     </main>

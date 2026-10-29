@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Guida Sanity · Kwa Nyuki</title>
+    <style>
+      :root {
+        --wax: #fcf9f2;
+        --charcoal: #2d2926;
+        --honey: #c48a20;
+        --sage: #4a5d4e;
+        --line: rgba(45, 41, 38, 0.12);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--wax);
+        color: var(--charcoal);
+        font: 22px/1.55 Georgia, "Times New Roman", serif;
+      }
+      main {
+        max-width: 42rem;
+        margin: 0 auto;
+        padding: 2.5rem 1.4rem 4rem;
+      }
+      .lang {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+      }
+      .lang button {
+        font: 16px/1 system-ui, sans-serif;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 0.6rem 1rem;
+        border: 1px solid var(--charcoal);
+        background: transparent;
+        cursor: pointer;
+      }
+      .lang button[aria-pressed="true"] {
+        background: var(--charcoal);
+        color: var(--wax);
+      }
+      h1 {
+        font-size: 2.4rem;
+        line-height: 1.15;
+        font-weight: 600;
+        margin: 0 0 0.75rem;
+      }
+      h2 {
+        font-size: 1.45rem;
+        margin: 2.4rem 0 0.6rem;
+      }
+      p,
+      li {
+        margin: 0 0 0.85rem;
+      }
+      ol {
+        padding-left: 1.3rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 1.05rem;
+        margin: 0.8rem 0 1.2rem;
+      }
+      th,
+      td {
+        text-align: left;
+        vertical-align: top;
+        padding: 0.7rem 0.55rem;
+        border-bottom: 1px solid var(--line);
+      }
+      th {
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--sage);
+      }
+      .note {
+        background: #fff;
+        border-left: 6px solid var(--honey);
+        padding: 1rem 1.1rem;
+        margin: 1.2rem 0;
+      }
+      a {
+        color: var(--sage);
+      }
+      .pane[hidden] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="it" aria-pressed="true">Italiano</button>
+        <button type="button" data-lang="en" aria-pressed="false">English</button>
+      </div>
+
+      <div class="pane" data-pane="it">
+        <h1>Come aggiornare il sito</h1>
+        <p>
+          Questa è la guida per Sanity, lo strumento dove si scrivono testi e si
+          caricano foto. Il sito pubblico è
+          <a href="https://kwanyuki.it">kwanyuki.it</a>.
+        </p>
+
+        <div class="note">
+          Dopo ogni modifica, in alto a destra premete <strong>Publish</strong>
+          (Pubblica). Senza quel clic, il sito non cambia. Poi aspettate qualche
+          minuto e aggiornate la pagina del sito.
+        </div>
+
+        <h2>1. Aprire Sanity</h2>
+        <ol>
+          <li>Aprite il link dell’editor che vi abbiamo inviato.</li>
+          <li>Entrate con email e password.</li>
+          <li>
+            A sinistra vedrete tre voci: <strong>Site Settings</strong>,
+            <strong>Products</strong>, <strong>News</strong>.
+          </li>
+        </ol>
+
+        <h2>2. Site Settings — cose di tutto il sito</h2>
+        <p>Cliccate <strong>Site Settings</strong>. Vale per italiano, francese e inglese.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Campo in Sanity</th>
+              <th>Cosa cambia sul sito</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Logo</td>
+              <td>Simbolo in alto a sinistra (e in basso). Se è vuoto, resta scritto KWA NYUKI.</td>
+            </tr>
+            <tr>
+              <td>Instagram / Facebook</td>
+              <td>I due pallini in fondo a ogni pagina. Vuoto = icona nascosta.</td>
+            </tr>
+            <tr>
+              <td>Home video link</td>
+              <td>Il video grande in cima alla Home. Deve essere un file .mp4, non un link YouTube.</td>
+            </tr>
+            <tr>
+              <td>Home video still</td>
+              <td>L’immagine ferma mentre il video carica. Serve anche quando si condivide la pagina.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>3. Products — pagina Prodotti</h2>
+        <p>
+          Ogni miele è una scheda su
+          <a href="https://kwanyuki.it/it/products/">/prodotti</a>. Non ha una pagina tutta sua.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Campo</th>
+              <th>Cosa si vede</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Name</td>
+              <td>Il nome grande sulla scheda.</td>
+            </tr>
+            <tr>
+              <td>Web address</td>
+              <td>Cliccate Generate. Non si vede. Non cambiatelo dopo.</td>
+            </tr>
+            <tr>
+              <td>Short text</td>
+              <td>Le due o tre righe sotto il nome.</td>
+            </tr>
+            <tr>
+              <td>Price</td>
+              <td>Il prezzo in alto a destra sulla scheda.</td>
+            </tr>
+            <tr>
+              <td>Photo</td>
+              <td>La foto della scheda. Photo description = testo per chi non vede l’immagine.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          Per italiano, francese e inglese servono <strong>tre copie</strong> dello stesso
+          prodotto (una per lingua). Usate il menu delle lingue nel documento.
+        </p>
+        <p>
+          Attenzione: se pubblicate anche un solo prodotto vero, le schede di esempio
+          spariscono.
+        </p>
+
+        <h2>4. News — pagina Notizie</h2>
+        <p>
+          L’elenco è su <a href="https://kwanyuki.it/it/news/">/notizie</a>. Il testo lungo
+          si vede solo dopo il clic sulla notizia.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Campo</th>
+              <th>Cosa si vede</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Title</td>
+              <td>Titolo nell’elenco e in cima all’articolo.</td>
+            </tr>
+            <tr>
+              <td>Web address</td>
+              <td>Cliccate Generate. Diventa il link dell’articolo. Non cambiatelo dopo, o il vecchio link si rompe.</td>
+            </tr>
+            <tr>
+              <td>Short text</td>
+              <td>Il riassunto nell’elenco (non il testo lungo).</td>
+            </tr>
+            <tr>
+              <td>Date</td>
+              <td>La data sulla scheda. Le più nuove stanno in cima.</td>
+            </tr>
+            <tr>
+              <td>Photo</td>
+              <td>Foto nell’elenco e in cima all’articolo.</td>
+            </tr>
+            <tr>
+              <td>Full text</td>
+              <td>Il racconto, solo nella pagina dell’articolo.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>5. Cosa non si cambia da qui</h2>
+        <p>
+          Menu, testi della Home (titolo, storia), indirizzo e orari dei Contatti:
+          quelli non sono in Sanity. Chiedete a noi.
+        </p>
+      </div>
+
+      <div class="pane" data-pane="en" hidden>
+        <h1>How to update the website</h1>
+        <p>
+          This is the guide for Sanity, where you write text and upload photos. The
+          public site is <a href="https://kwanyuki.it">kwanyuki.it</a>.
+        </p>
+
+        <div class="note">
+          After every change, press <strong>Publish</strong> at the top right. If you
+          skip that click, the website does not change. Then wait a few minutes and
+          refresh the site.
+        </div>
+
+        <h2>1. Open Sanity</h2>
+        <ol>
+          <li>Open the editor link we sent you.</li>
+          <li>Sign in with your email and password.</li>
+          <li>
+            On the left you will see three items:
+            <strong>Site Settings</strong>, <strong>Products</strong>,
+            <strong>News</strong>.
+          </li>
+        </ol>
+
+        <h2>2. Site Settings — things used on every page</h2>
+        <p>Click <strong>Site Settings</strong>. This is shared for Italian, French, and English.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Field in Sanity</th>
+              <th>What changes on the site</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Logo</td>
+              <td>The mark at the top left (and in the footer). If empty, the written KWA NYUKI lockup stays.</td>
+            </tr>
+            <tr>
+              <td>Instagram / Facebook</td>
+              <td>The two round icons at the bottom of every page. Empty = icon hidden.</td>
+            </tr>
+            <tr>
+              <td>Home video link</td>
+              <td>The big video at the top of Home. Must be a direct .mp4 file, not a YouTube page.</td>
+            </tr>
+            <tr>
+              <td>Home video still</td>
+              <td>The still picture while the video loads. Also used when the page is shared.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>3. Products — the Products page</h2>
+        <p>
+          Each honey is a card on
+          <a href="https://kwanyuki.it/en/products/">/products</a>. There is no separate
+          product page.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>What you see</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Name</td>
+              <td>The large name on the card.</td>
+            </tr>
+            <tr>
+              <td>Web address</td>
+              <td>Click Generate. It is not shown. Do not change it later.</td>
+            </tr>
+            <tr>
+              <td>Short text</td>
+              <td>The two or three lines under the name.</td>
+            </tr>
+            <tr>
+              <td>Price</td>
+              <td>The price at the top right of the card.</td>
+            </tr>
+            <tr>
+              <td>Photo</td>
+              <td>The picture on the card. Photo description is for people who cannot see the image.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          Italian, French, and English need <strong>three copies</strong> of the same
+          product (one per language). Use the language menu on the document.
+        </p>
+        <p>
+          Note: if you publish even one real product, the sample cards disappear.
+        </p>
+
+        <h2>4. News — the News page</h2>
+        <p>
+          The list is at <a href="https://kwanyuki.it/en/news/">/news</a>. The long text
+          appears only after someone clicks a story.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>What you see</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Title</td>
+              <td>The headline on the list and at the top of the article.</td>
+            </tr>
+            <tr>
+              <td>Web address</td>
+              <td>Click Generate. This becomes the article link. Do not change it later, or the old link breaks.</td>
+            </tr>
+            <tr>
+              <td>Short text</td>
+              <td>The summary on the list (not the full article).</td>
+            </tr>
+            <tr>
+              <td>Date</td>
+              <td>The date on the card. Newest stories sit at the top.</td>
+            </tr>
+            <tr>
+              <td>Photo</td>
+              <td>The picture on the list and at the top of the article.</td>
+            </tr>
+            <tr>
+              <td>Full text</td>
+              <td>The story, only on the article page.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>5. What you cannot change here</h2>
+        <p>
+          The menu, Home page titles and story, and the Contact address and hours are
+          not in Sanity. Ask us to change those.
+        </p>
+      </div>
+    </main>
+    <script>
+      const buttons = document.querySelectorAll(".lang button");
+      const panes = document.querySelectorAll("[data-pane]");
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const lang = button.getAttribute("data-lang");
+          document.documentElement.lang = lang || "it";
+          buttons.forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+          panes.forEach((pane) => {
+            pane.hidden = pane.getAttribute("data-pane") !== lang;
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -34,7 +34,7 @@ const copy = Object.fromEntries(
   alternates={{ [lang]: Astro.url.pathname }}
 >
   <section class="mx-auto flex min-h-dvh max-w-xl flex-col items-center justify-center px-5 py-24 text-center md:px-8">
-    <Logo className="scale-110" />
+    <Logo className="scale-110" src={settings.logo} alt={settings.logoAlt} />
     <p id="nf-kicker" class="mt-10 text-xs uppercase tracking-[0.3em] text-sage">{t.notFound.kicker}</p>
     <h1 id="nf-title" class="mt-4 font-serif text-4xl leading-tight md:text-6xl">{t.notFound.title}</h1>
     <a

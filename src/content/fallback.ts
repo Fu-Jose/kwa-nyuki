@@ -26,6 +26,8 @@ export type SiteSettings = {
   facebook?: string;
   heroVideoUrl: string;
   heroPoster: string;
+  logo?: string;
+  logoAlt?: string;
 };
 
 export const siteSettings: SiteSettings = {

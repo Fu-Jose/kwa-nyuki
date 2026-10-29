@@ -21,7 +21,7 @@ const t = useTranslations(lang);
   >
     <div>
       <a href={localizedPath(lang, '/')}>
-        <Logo />
+        <Logo src={settings.logo} alt={settings.logoAlt} />
       </a>
       <p class='mt-4 max-w-sm text-sm text-charcoal/70 dark:text-soft/70'>
         {t.footer.note}

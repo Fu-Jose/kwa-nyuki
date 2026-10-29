@@ -60,7 +60,9 @@ const settingsQuery = groq`*[_type == "siteSettings"][0] {
   instagram,
   facebook,
   heroVideoUrl,
-  "heroPoster": heroPoster.asset->url
+  "heroPoster": heroPoster.asset->url,
+  "logo": logo.asset->url,
+  "logoAlt": logo.alt
 }`;
 
 function mapProduct(item: Product): Product {
