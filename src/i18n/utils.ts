@@ -9,8 +9,8 @@ export function useTranslations(lang: Lang) {
 }
 
 /** Every page of the site; the article page lives under the news section. */
-export type PageKey = "home" | "products" | "news" | "contact" | "privacy";
-export const pageKeys: PageKey[] = ["home", "products", "news", "contact", "privacy"];
+export type PageKey = "home" | "farm" | "products" | "news" | "contact" | "privacy";
+export const pageKeys: PageKey[] = ["home", "farm", "products", "news", "contact", "privacy"];
 
 /**
  * URL segment of each page per language. Italian (the default) has no language prefix:
@@ -19,6 +19,7 @@ export const pageKeys: PageKey[] = ["home", "products", "news", "contact", "priv
  */
 const pageSegments: Record<PageKey, Record<Lang, string>> = {
   home: { it: "", en: "", fr: "" },
+  farm: { it: "fattoria", en: "farm", fr: "ferme" },
   products: { it: "prodotti", en: "products", fr: "produits" },
   news: { it: "notizie", en: "news", fr: "actualites" },
   contact: { it: "contatti", en: "contact", fr: "contact" },
@@ -44,7 +45,7 @@ export function langFromPath(pathname: string): Lang {
 
 export function getNavLinks(lang: Lang) {
   const t = useTranslations(lang);
-  return (["home", "products", "news", "contact"] as const).map((page) => ({
+  return (["home", "farm", "products", "news", "contact"] as const).map((page) => ({
     page,
     href: pagePath(lang, page),
     label: t.nav[page],

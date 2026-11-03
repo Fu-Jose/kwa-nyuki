@@ -19,6 +19,7 @@ export const ui = {
     brandAccent: "HONEY",
     nav: {
       home: "Home",
+      farm: "Farm",
       products: "Products",
       news: "News",
       contact: "Contact",
@@ -84,6 +85,7 @@ export const ui = {
     seo: {
       home: "Kwa Nyuki · Honey from a regenerative farm",
       products: "Our honey · Kwa Nyuki",
+      farm: "The farm · Kwa Nyuki",
       news: "Farm journal · Kwa Nyuki",
       contact: "Contact and farm shop · Kwa Nyuki",
       privacy: "Privacy policy · Kwa Nyuki",
@@ -114,6 +116,7 @@ export const ui = {
     brandAccent: "MIELE",
     nav: {
       home: "Home",
+      farm: "Fattoria",
       products: "Prodotti",
       news: "Notizie",
       contact: "Contatti",
@@ -179,6 +182,7 @@ export const ui = {
     seo: {
       home: "Kwa Nyuki · Miele da una fattoria rigenerativa",
       products: "Il nostro miele · Kwa Nyuki",
+      farm: "La fattoria · Kwa Nyuki",
       news: "Diario della fattoria · Kwa Nyuki",
       contact: "Contatti e bottega · Kwa Nyuki",
       privacy: "Privacy · Kwa Nyuki",
@@ -209,6 +213,7 @@ export const ui = {
     brandAccent: "MIEL",
     nav: {
       home: "Accueil",
+      farm: "Ferme",
       products: "Produits",
       news: "Actualités",
       contact: "Contact",
@@ -274,6 +279,7 @@ export const ui = {
     seo: {
       home: "Kwa Nyuki · Miel d’une ferme régénératrice",
       products: "Notre miel · Kwa Nyuki",
+      farm: "La ferme · Kwa Nyuki",
       news: "Journal de la ferme · Kwa Nyuki",
       contact: "Contact et boutique · Kwa Nyuki",
       privacy: "Confidentialité · Kwa Nyuki",

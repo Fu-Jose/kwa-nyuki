@@ -35,6 +35,8 @@ Source: the client's own articles in Sanity: "Il progetto Kwa Nyuki", "La nostra
 ## Capabilities and Constraints
 - **Products:** sold in the farm shop or on request, never online. Prices are entered in Sanity.
 - **Editable in Site Settings:** address (one for all languages), shop hours (per language, empty falls back to Italian), email and phone (shown only when set), business name and Partita IVA (footer, privacy page, structured data), and the page titles Google shows (empty keeps the defaults in `ui.ts`).
+- **News text** is rich text (subheadings, bold, italic, videos). Articles written before Nov 2026 hold plain text and still render; the Studio flags them until rewritten. News and the Home story can show an optional video instead of the photo.
+- **Open: Fattoria page.** In the menu but empty and `noindex` until the client decides the content (probably a photo gallery).
 - **Open: privacy policy.** `src/i18n/privacy.ts` is a draft written from how the site works. A privacy consultant must review it before launch, and it needs the real business name, P.IVA and address.
 - **Editable in "Pagina Home"** (one per language): the hero title, subtitle and button text, and the story title, text and photo. Every empty field keeps the built-in copy from `src/i18n/ui.ts`.
 - **Open: farm location.** "Via delle Api 12, 53024 Montalcino" is a **placeholder**. The real address is not known yet; the client will replace it in Sanity. Do not use the location as a fact in new copy. The map and directions follow whatever address is set.

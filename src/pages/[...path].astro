@@ -3,6 +3,7 @@
 // the other languages under their prefix ("/en/products/", "/fr/produits/"); the URL
 // segments come from pagePath() in i18n/utils.ts. Each page's content is a view in src/views.
 import HomeView from "../views/HomeView.astro";
+import FarmView from "../views/FarmView.astro";
 import ProductsView from "../views/ProductsView.astro";
 import NewsView from "../views/NewsView.astro";
 import ArticleView from "../views/ArticleView.astro";
@@ -42,6 +43,7 @@ const { lang, page, slug } = Astro.props;
 ---
 
 {page === "home" && <HomeView lang={lang} />}
+{page === "farm" && <FarmView lang={lang} />}
 {page === "products" && <ProductsView lang={lang} />}
 {page === "news" && <NewsView lang={lang} />}
 {page === "article" && slug && <ArticleView lang={lang} slug={slug} />}

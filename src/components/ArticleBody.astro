@@ -1,0 +1,44 @@
+---
+// Renders the article text from the Studio editor: paragraphs, subheadings (h2), bold/italic
+// and videos. Articles written before the rich editor hold plain text and render as before.
+import type { NewsItem } from "../content/fallback";
+
+interface Props {
+  body: NewsItem["body"];
+}
+
+const { body } = Astro.props;
+const strongClass = "font-semibold text-charcoal dark:text-soft";
+---
+
+<div class="mt-10 text-lg leading-9 text-charcoal/80 dark:text-soft/80">
+  {
+    typeof body === "string" ? (
+      // pre-line keeps the line breaks and blank lines typed in the old plain-text field
+      <p class="whitespace-pre-line">{body}</p>
+    ) : (
+      body?.map((block) =>
+        block._type === "video" ? (
+          block.url && (
+            <video src={block.url} controls playsinline preload="metadata" class="mt-8 w-full rounded-3xl first:mt-0" />
+          )
+        ) : block.style === "h2" ? (
+          <h2 class="mt-12 font-serif text-3xl leading-tight text-charcoal first:mt-0 dark:text-soft">
+            {block.children.map((span) => span.text)}
+          </h2>
+        ) : (
+          <p class="mt-6 whitespace-pre-line first:mt-0">
+            {block.children.map((span) => {
+              const strong = span.marks?.includes("strong");
+              const em = span.marks?.includes("em");
+              if (strong && em) return <strong class={strongClass}><em>{span.text}</em></strong>;
+              if (strong) return <strong class={strongClass}>{span.text}</strong>;
+              if (em) return <em>{span.text}</em>;
+              return span.text;
+            })}
+          </p>
+        ),
+      )
+    )
+  }
+</div>

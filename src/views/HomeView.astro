@@ -18,7 +18,7 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const [settings, home, products] = await Promise.all([getSiteSettings(), getHomePage(lang), getProducts(lang)]);
 
-// Texts and photo come from the "Pagina Home" document in Sanity; each empty field keeps the built-in copy.
+// Texts, photo and video come from the "Pagina Home" document in Sanity; each empty field keeps the built-in copy.
 const hero = {
   title: home.heroTitle?.trim() || t.hero.title,
   subtitle: home.heroSubtitle?.trim() || t.hero.subtitle,
@@ -59,15 +59,26 @@ const featured = products.slice(0, 4);
 
   <section id="story" class="mx-auto grid max-w-6xl gap-12 px-5 py-24 md:grid-cols-2 md:items-center md:px-8 md:py-32">
     <div class="reveal-on-scroll overflow-hidden rounded-3xl">
-      <Image
-        src={story.image}
-        alt={story.imageAlt}
-        width={1200}
-        height={900}
-        widths={[600, 900, 1200]}
-        sizes="(min-width: 1152px) 552px, (min-width: 768px) 48vw, 100vw"
-        class="aspect-[4/3] h-full w-full object-cover"
-      />
+      {home.storyVideo ? (
+        <video
+          src={home.storyVideo}
+          poster={sanityImageUrl(story.image, { w: 1200, q: 75, auto: "format" })}
+          controls
+          playsinline
+          preload="metadata"
+          class="aspect-[4/3] h-full w-full object-cover"
+        />
+      ) : (
+        <Image
+          src={story.image}
+          alt={story.imageAlt}
+          width={1200}
+          height={900}
+          widths={[600, 900, 1200]}
+          sizes="(min-width: 1152px) 552px, (min-width: 768px) 48vw, 100vw"
+          class="aspect-[4/3] h-full w-full object-cover"
+        />
+      )}
     </div>
     <div class="reveal-on-scroll reveal-delay">
       <h2 class="font-serif text-4xl text-balance md:text-5xl">{story.title}</h2>

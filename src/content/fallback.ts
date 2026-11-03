@@ -26,10 +26,18 @@ export type NewsItem = {
   _updatedAt?: string;
   image: string;
   imageAlt: string;
-  body: string;
+  /** Optional video shown instead of the cover photo at the top of the article. */
+  video?: string | null;
+  /** Rich text from the Studio; plain text in articles written before the rich editor (and in the samples). */
+  body: string | ArticleBlock[] | null;
   /** Published versions of this article in each language (only filled for a single article). */
   translations?: { language: string; slug: string | null }[] | null;
 };
+
+/** Portable Text from the article editor: paragraphs and subheadings with bold/italic, and videos. */
+export type ArticleBlock =
+  | { _type: "block"; _key: string; style?: string; children: { _key: string; text: string; marks?: string[] }[] }
+  | { _type: "video"; _key: string; url?: string | null };
 
 export type SiteSettings = {
   instagram?: string;
@@ -50,7 +58,7 @@ export type SiteSettings = {
   legalName?: string | null;
   vatNumber?: string | null;
   /** From Site Settings: Google/browser title per page and language; empty = default in i18n/ui.ts. */
-  seoTitles?: Partial<Record<"home" | "products" | "news" | "contact", Partial<Record<Lang, string | null>> | null>> | null;
+  seoTitles?: Partial<Record<"home" | "farm" | "products" | "news" | "contact", Partial<Record<Lang, string | null>> | null>> | null;
 };
 
 /** Editable Home texts and photo from Sanity; every field is optional (empty = built-in copy). */
@@ -62,6 +70,7 @@ export type HomePage = {
   storyText?: string | null;
   storyImage?: string | null;
   storyImageAlt?: string | null;
+  storyVideo?: string | null;
 };
 
 export const siteSettings: SiteSettings = {

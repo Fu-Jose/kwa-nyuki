@@ -2,9 +2,10 @@
 import Layout from "../layouts/Layout.astro";
 import { Image } from "astro:assets";
 import { ArrowLeft, ArrowRight } from "@lucide/astro";
+import ArticleBody from "../components/ArticleBody.astro";
 import { siteName, type Lang } from "../i18n/ui";
 import { isLang, pagePath, useTranslations } from "../i18n/utils";
-import { getNews, getNewsBySlug, getSiteSettings } from "../lib/sanity.ts";
+import { getNews, getNewsBySlug, getSiteSettings, sanityImageUrl } from "../lib/sanity.ts";
 
 interface Props {
   lang: Lang;
@@ -76,6 +77,16 @@ const linkClass =
     <h1 class="font-serif text-4xl leading-tight md:text-6xl">{item.title}</h1>
     <p class="mt-4 text-sm text-sage"><time datetime={item.publishedAt}>{date}</time></p>
     <div class="mt-10 overflow-hidden rounded-3xl">
+      {item.video ? (
+        <video
+          src={item.video}
+          poster={sanityImageUrl(item.image, { w: 1400, q: 75, auto: "format" })}
+          controls
+          playsinline
+          preload="metadata"
+          class="w-full"
+        />
+      ) : (
       <Image
         src={item.image}
         alt={item.imageAlt}
@@ -87,9 +98,9 @@ const linkClass =
         fetchpriority="high"
         class="w-full object-cover"
       />
+      )}
     </div>
-    <!-- pre-line keeps the line breaks and blank lines typed in the Studio's plain-text field -->
-    <p class="mt-10 whitespace-pre-line text-lg leading-9 text-charcoal/80 dark:text-soft/80">{item.body}</p>
+    <ArticleBody body={item.body} />
   </article>
 
   <nav

@@ -70,7 +70,6 @@ const newsQuery = groq`*[_type == "news" && ${IN_LANGUAGE_OR_UNTRANSLATED_ITALIA
   title,
   excerpt,
   publishedAt,
-  body,
   "image": image.asset->url,
   "imageAlt": image.alt
 }`;
@@ -83,7 +82,9 @@ const newsBySlugQuery = groq`*[_type == "news" && language == $lang && slug.curr
   excerpt,
   publishedAt,
   _updatedAt,
-  body,
+  // Old articles hold plain text (a string, which body[] would turn into null): pass it through as is.
+  "body": select(defined(body[0]._type) => body[]{ ..., _type == "video" => { "url": asset->url } }, body),
+  "video": video.asset->url,
   "image": image.asset->url,
   "imageAlt": image.alt,
   "translations": *[_type == "translation.metadata" && references(^._id)].translations[].value->{
@@ -120,6 +121,14 @@ const homeQuery = groq`{
   "storyImageAlt": coalesce(
     *[_type == "home" && language == $lang && defined(storyImage.asset)][0].storyImage.alt,
     *[_type == "home" && language == "it"][0].storyImage.alt
+  ),
+  // Same rule as the photo, but a language with its own photo keeps it instead of the Italian video.
+  "storyVideo": coalesce(
+    *[_type == "home" && language == $lang][0].storyVideo.asset->url,
+    select(
+      defined(*[_type == "home" && language == $lang][0].storyImage.asset) => null,
+      *[_type == "home" && language == "it"][0].storyVideo.asset->url
+    )
   )
 }`;
 

@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineArrayMember, defineField, defineType, type FileRule } from "sanity";
 import { ui } from "../src/i18n/ui";
 
 // Field titles and descriptions are written for the client (Italian, non-technical):
@@ -18,6 +18,7 @@ const SEO_PAGES = [
   { name: "home", title: "Home", where: "Home (quella con il video)" },
   { name: "products", title: "Prodotti", where: "Prodotti" },
   { name: "news", title: "Notizie", where: "Notizie (l'elenco degli articoli)" },
+  { name: "farm", title: "Fattoria", where: "Fattoria" },
   { name: "contact", title: "Contatti", where: "Contatti" },
 ] as const;
 
@@ -31,6 +32,19 @@ const PHOTO_FORMAT_HINT =
   "Formato JPG o PNG. Dal telefono: se il file non si carica, inviate prima la foto a voi stessi via email o WhatsApp e caricate quella.";
 
 const MAX_VIDEO_MB = 20;
+
+// Blocks publishing a video over MAX_VIDEO_MB: heavy videos make the site slow on phones.
+const videoSizeRule = (Rule: FileRule) =>
+  Rule.custom(async (value: { asset?: { _ref?: string } } | undefined, context) => {
+    const ref = value?.asset?._ref;
+    if (!ref) return true;
+    const size = await context
+      .getClient({ apiVersion: "2025-08-01" })
+      .fetch<number | null>("*[_id == $ref][0].size", { ref });
+    if (!size || size <= MAX_VIDEO_MB * 1_000_000) return true;
+    return `Il video pesa ${Math.round(size / 1_000_000)} MB: il massimo è ${MAX_VIDEO_MB} MB. Accorciatelo o riducetene la qualità, oppure chiedete a chi gestisce il sito di prepararlo.`;
+  });
+const VIDEO_FORMAT_HINT = `Formato MP4 (i video .MOV dell'iPhone vanno prima convertiti in MP4), file sotto i ${MAX_VIDEO_MB} MB.`;
 
 const photoAltField = defineField({
   name: "alt",
@@ -175,12 +189,44 @@ export const news = defineType({
       validation: (Rule) => Rule.required().error("Caricate una foto di copertina."),
     }),
     defineField({
+      name: "video",
+      title: "Video di copertina (facoltativo)",
+      description: `Se caricate un video, in cima all'articolo si vede il video al posto della foto di copertina. La foto serve comunque: resta nell'elenco Notizie e nelle anteprime quando si condivide il link. ${VIDEO_FORMAT_HINT}`,
+      type: "file",
+      options: { accept: "video/mp4" },
+      validation: videoSizeRule,
+    }),
+    defineField({
       name: "body",
       title: "Testo dell'articolo",
       description:
-        "Il testo completo, che si legge dopo aver aperto la notizia. Per andare a capo premete Invio; per separare due paragrafi lasciate una riga vuota. Grassetto, titoletti e video non sono ancora disponibili in questo campo.",
-      type: "text",
-      rows: 12,
+        "Il testo completo, che si legge dopo aver aperto la notizia. Invio inizia un nuovo paragrafo. Nella barra in cima al campo: per un titoletto scegliete «Titoletto» dal menu che dice «Testo normale»; per il grassetto selezionate le parole e premete B. Per inserire un video usate il pulsante «Video» nella stessa barra.",
+      type: "array",
+      of: [
+        defineArrayMember({
+          type: "block",
+          styles: [
+            { title: "Testo normale", value: "normal" },
+            { title: "Titoletto", value: "h2" },
+          ],
+          lists: [],
+          marks: {
+            decorators: [
+              { title: "Grassetto", value: "strong" },
+              { title: "Corsivo", value: "em" },
+            ],
+            annotations: [],
+          },
+        }),
+        defineArrayMember({
+          name: "video",
+          title: "Video",
+          type: "file",
+          description: VIDEO_FORMAT_HINT,
+          options: { accept: "video/mp4" },
+          validation: videoSizeRule,
+        }),
+      ],
     }),
   ],
   preview: {
@@ -264,6 +310,15 @@ export const home = defineType({
       options: { accept: PHOTO_FORMATS },
       fields: [photoAltField],
     }),
+    defineField({
+      name: "storyVideo",
+      title: "Video del racconto (facoltativo)",
+      fieldset: "story",
+      description: `Se caricate un video, accanto al racconto si vede il video al posto della foto (la foto fa da anteprima prima che parta). Come per la foto, basta caricarlo nella versione italiana. ${VIDEO_FORMAT_HINT}`,
+      type: "file",
+      options: { accept: "video/mp4" },
+      validation: videoSizeRule,
+    }),
   ],
   preview: {
     select: { language: "language", media: "storyImage" },
@@ -315,16 +370,7 @@ export const siteSettings = defineType({
       description: `Il video a tutto schermo in cima alla Home, in tutte le lingue. Premete «Carica» e scegliete il file dal computer. Formato MP4: i video .MOV dell'iPhone vanno prima convertiti in MP4. Il video parte sempre senza audio e ricomincia da capo. Consigli: 10–30 secondi, orizzontale, file sotto i ${MAX_VIDEO_MB} MB, perché un video più pesante rallenta il sito sui telefoni.`,
       type: "file",
       options: { accept: "video/mp4" },
-      validation: (Rule) =>
-        Rule.custom(async (value: { asset?: { _ref?: string } } | undefined, context) => {
-          const ref = value?.asset?._ref;
-          if (!ref) return true;
-          const size = await context
-            .getClient({ apiVersion: "2025-08-01" })
-            .fetch<number | null>("*[_id == $ref][0].size", { ref });
-          if (!size || size <= MAX_VIDEO_MB * 1_000_000) return true;
-          return `Il video pesa ${Math.round(size / 1_000_000)} MB: il massimo è ${MAX_VIDEO_MB} MB. Accorciatelo o riducetene la qualità, oppure chiedete a chi gestisce il sito di prepararlo.`;
-        }),
+      validation: videoSizeRule,
     }),
     defineField({
       name: "heroVideoUrl",
