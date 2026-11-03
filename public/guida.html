@@ -105,288 +105,182 @@
       <div class="pane" data-pane="it">
         <h1>Come aggiornare il sito</h1>
         <p>
-          Questa è la guida per Sanity, lo strumento dove si scrivono testi e si
-          caricano foto. Il sito pubblico è
+          Questa è la guida per Sanity, lo strumento dove si scrivono i testi e si
+          caricano foto e video. Il sito pubblico è
           <a href="https://kwanyuki.it">kwanyuki.it</a>.
         </p>
 
         <div class="note">
-          Dopo ogni modifica, in alto a destra premete <strong>Publish</strong>
-          (Pubblica). Senza quel clic, il sito non cambia. Poi aspettate qualche
-          minuto e aggiornate la pagina del sito.
+          Dopo ogni modifica premete <strong>Pubblica</strong>, il pulsante verde in
+          basso a destra. Senza quel clic il sito non cambia. Poi aspettate qualche
+          minuto e ricaricate la pagina del sito.
         </div>
 
         <h2>1. Aprire Sanity</h2>
         <ol>
-          <li>Aprite il link dell’editor che vi abbiamo inviato.</li>
-          <li>Entrate con email e password.</li>
+          <li>Aprite <a href="https://kwanyuki.sanity.studio">kwanyuki.sanity.studio</a>.</li>
+          <li>Entrate con l’account con cui vi abbiamo invitato (Google oppure email).</li>
           <li>
-            A sinistra vedrete tre voci: <strong>Site Settings</strong>,
-            <strong>Products</strong>, <strong>News</strong>.
+            A sinistra trovate quattro voci: <strong>Impostazioni del sito</strong>
+            (logo, video, indirizzo, orari, email, telefono, social),
+            <strong>Pagina Home</strong>, <strong>Prodotti</strong>, <strong>Notizie</strong>.
           </li>
         </ol>
 
-        <h2>2. Site Settings — cose di tutto il sito</h2>
-        <p>Cliccate <strong>Site Settings</strong>. Vale per italiano, francese e inglese.</p>
+        <h2>2. Ogni campo ha la sua spiegazione</h2>
+        <p>
+          Sotto il nome di ogni campo c’è una frase che dice dove si vede sul sito e
+          che tipo di file serve. In caso di dubbio, leggete quella.
+        </p>
+        <p>
+          Un messaggio <strong>rosso</strong> blocca la pubblicazione finché non lo
+          sistemate (per esempio: manca la foto). Un messaggio <strong>giallo</strong>
+          è solo un consiglio: potete pubblicare lo stesso.
+        </p>
+
+        <h2>3. Aggiungere un prodotto o una notizia</h2>
+        <ol>
+          <li>Premete <strong>Crea</strong> in alto.</li>
+          <li>Scegliete la lingua e il tipo, per esempio <strong>Italiano Notizia</strong>.</li>
+          <li>Compilate i campi. Per le notizie, dopo il titolo premete <strong>Genera</strong> accanto a «Indirizzo della pagina».</li>
+          <li>Premete <strong>Pubblica</strong>.</li>
+        </ol>
+
+        <h2>4. Tradurre in francese e inglese</h2>
+        <p>
+          Ogni prodotto, ogni notizia e la Pagina Home esistono in tre copie, una per lingua. Negli
+          elenchi, sotto il nome, c’è scritto in che lingua è ciascuna copia.
+        </p>
+        <ol>
+          <li>Aprite la versione italiana.</li>
+          <li>In alto premete <strong>Translations</strong> e scegliete la lingua: si crea una copia da tradurre.</li>
+          <li>Traducete i testi. Per le notizie premete di nuovo <strong>Genera</strong>.</li>
+          <li>Premete <strong>Pubblica</strong>.</li>
+        </ol>
+        <p>
+          Attenzione: appena pubblicate un prodotto vero in una lingua, le schede di
+          esempio di quella lingua spariscono. Lo stesso vale per le notizie.
+        </p>
+
+        <h2>5. Formati dei file</h2>
         <table>
           <thead>
             <tr>
-              <th>Campo in Sanity</th>
-              <th>Cosa cambia sul sito</th>
+              <th>Cosa</th>
+              <th>Formato</th>
             </tr>
           </thead>
           <tbody>
+            <tr>
+              <td>Foto (prodotti, notizie, anteprima video)</td>
+              <td>JPG o PNG</td>
+            </tr>
             <tr>
               <td>Logo</td>
-              <td>Simbolo in alto a sinistra (e in basso). Se è vuoto, resta scritto KWA NYUKI.</td>
+              <td>SVG, oppure PNG con sfondo trasparente</td>
             </tr>
             <tr>
-              <td>Instagram / Facebook</td>
-              <td>I due pallini in fondo a ogni pagina. Vuoto = icona nascosta.</td>
-            </tr>
-            <tr>
-              <td>Home video link</td>
-              <td>Il video grande in cima alla Home. Deve essere un file .mp4, non un link YouTube.</td>
-            </tr>
-            <tr>
-              <td>Home video still</td>
-              <td>L’immagine ferma mentre il video carica. Serve anche quando si condivide la pagina.</td>
+              <td>Video della Home</td>
+              <td>MP4, sotto i 20 MB, 10–30 secondi. L’audio non si sente.</td>
             </tr>
           </tbody>
         </table>
 
-        <h2>3. Products — pagina Prodotti</h2>
+        <h2>6. Cosa non si cambia da qui</h2>
         <p>
-          Ogni miele è una scheda su
-          <a href="https://kwanyuki.it/it/products/">/prodotti</a>. Non ha una pagina tutta sua.
-        </p>
-        <table>
-          <thead>
-            <tr>
-              <th>Campo</th>
-              <th>Cosa si vede</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Name</td>
-              <td>Il nome grande sulla scheda.</td>
-            </tr>
-            <tr>
-              <td>Web address</td>
-              <td>Cliccate Generate. Non si vede. Non cambiatelo dopo.</td>
-            </tr>
-            <tr>
-              <td>Short text</td>
-              <td>Le due o tre righe sotto il nome.</td>
-            </tr>
-            <tr>
-              <td>Price</td>
-              <td>Il prezzo in alto a destra sulla scheda.</td>
-            </tr>
-            <tr>
-              <td>Photo</td>
-              <td>La foto della scheda. Photo description = testo per chi non vede l’immagine.</td>
-            </tr>
-          </tbody>
-        </table>
-        <p>
-          Per italiano, francese e inglese servono <strong>tre copie</strong> dello stesso
-          prodotto (una per lingua). Usate il menu delle lingue nel documento.
-        </p>
-        <p>
-          Attenzione: se pubblicate anche un solo prodotto vero, le schede di esempio
-          spariscono.
-        </p>
-
-        <h2>4. News — pagina Notizie</h2>
-        <p>
-          L’elenco è su <a href="https://kwanyuki.it/it/news/">/notizie</a>. Il testo lungo
-          si vede solo dopo il clic sulla notizia.
-        </p>
-        <table>
-          <thead>
-            <tr>
-              <th>Campo</th>
-              <th>Cosa si vede</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Title</td>
-              <td>Titolo nell’elenco e in cima all’articolo.</td>
-            </tr>
-            <tr>
-              <td>Web address</td>
-              <td>Cliccate Generate. Diventa il link dell’articolo. Non cambiatelo dopo, o il vecchio link si rompe.</td>
-            </tr>
-            <tr>
-              <td>Short text</td>
-              <td>Il riassunto nell’elenco (non il testo lungo).</td>
-            </tr>
-            <tr>
-              <td>Date</td>
-              <td>La data sulla scheda. Le più nuove stanno in cima.</td>
-            </tr>
-            <tr>
-              <td>Photo</td>
-              <td>Foto nell’elenco e in cima all’articolo.</td>
-            </tr>
-            <tr>
-              <td>Full text</td>
-              <td>Il racconto, solo nella pagina dell’articolo.</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h2>5. Cosa non si cambia da qui</h2>
-        <p>
-          Menu, testi della Home (titolo, storia), indirizzo e orari dei Contatti:
-          quelli non sono in Sanity. Chiedete a noi.
+          Le voci del menu e la struttura delle pagine non sono in Sanity. Chiedete a noi.
         </p>
       </div>
 
       <div class="pane" data-pane="en" hidden>
         <h1>How to update the website</h1>
         <p>
-          This is the guide for Sanity, where you write text and upload photos. The
-          public site is <a href="https://kwanyuki.it">kwanyuki.it</a>.
+          This is the guide for Sanity, where you write text and upload photos and
+          videos. The public site is <a href="https://kwanyuki.it">kwanyuki.it</a>.
+          The editor is in Italian: the names in bold below are exactly what you
+          will see on screen.
         </p>
 
         <div class="note">
-          After every change, press <strong>Publish</strong> at the top right. If you
-          skip that click, the website does not change. Then wait a few minutes and
-          refresh the site.
+          After every change press <strong>Pubblica</strong> (Publish), the green
+          button at the bottom right. If you skip that click, the website does not
+          change. Then wait a few minutes and refresh the site.
         </div>
 
         <h2>1. Open Sanity</h2>
         <ol>
-          <li>Open the editor link we sent you.</li>
-          <li>Sign in with your email and password.</li>
+          <li>Open <a href="https://kwanyuki.sanity.studio">kwanyuki.sanity.studio</a>.</li>
+          <li>Sign in with the account we invited (Google or email).</li>
           <li>
-            On the left you will see three items:
-            <strong>Site Settings</strong>, <strong>Products</strong>,
-            <strong>News</strong>.
+            On the left you will see <strong>Impostazioni del sito</strong> (site
+            settings: logo, video, address, hours, email, phone, social),
+            <strong>Pagina Home</strong> (home page), <strong>Prodotti</strong>
+            (products) and <strong>Notizie</strong> (news).
           </li>
         </ol>
 
-        <h2>2. Site Settings — things used on every page</h2>
-        <p>Click <strong>Site Settings</strong>. This is shared for Italian, French, and English.</p>
+        <h2>2. Every field explains itself</h2>
+        <p>
+          Under each field name a short sentence says where it shows on the site and
+          which file type it needs.
+        </p>
+        <p>
+          A <strong>red</strong> message blocks publishing until you fix it (for
+          example, a missing photo). A <strong>yellow</strong> message is only advice:
+          you can still publish.
+        </p>
+
+        <h2>3. Add a product or a news item</h2>
+        <ol>
+          <li>Press <strong>Crea</strong> (Create) at the top.</li>
+          <li>Pick the language and type, for example <strong>Italiano Notizia</strong>.</li>
+          <li>Fill in the fields. For news, after the title press <strong>Genera</strong> (Generate) next to «Indirizzo della pagina».</li>
+          <li>Press <strong>Pubblica</strong>.</li>
+        </ol>
+
+        <h2>4. Translate into French and English</h2>
+        <p>
+          Every product, news item and the home page exists in three copies, one per language. In
+          the lists, the language is written under each name.
+        </p>
+        <ol>
+          <li>Open the Italian version.</li>
+          <li>At the top press <strong>Translations</strong> and pick the language: a copy to translate is created.</li>
+          <li>Translate the text. For news, press <strong>Genera</strong> again.</li>
+          <li>Press <strong>Pubblica</strong>.</li>
+        </ol>
+        <p>
+          Note: as soon as you publish one real product in a language, the sample
+          cards for that language disappear. The same goes for news.
+        </p>
+
+        <h2>5. File formats</h2>
         <table>
           <thead>
             <tr>
-              <th>Field in Sanity</th>
-              <th>What changes on the site</th>
+              <th>What</th>
+              <th>Format</th>
             </tr>
           </thead>
           <tbody>
+            <tr>
+              <td>Photos (products, news, video preview)</td>
+              <td>JPG or PNG</td>
+            </tr>
             <tr>
               <td>Logo</td>
-              <td>The mark at the top left (and in the footer). If empty, the written KWA NYUKI lockup stays.</td>
+              <td>SVG, or PNG with a transparent background</td>
             </tr>
             <tr>
-              <td>Instagram / Facebook</td>
-              <td>The two round icons at the bottom of every page. Empty = icon hidden.</td>
-            </tr>
-            <tr>
-              <td>Home video link</td>
-              <td>The big video at the top of Home. Must be a direct .mp4 file, not a YouTube page.</td>
-            </tr>
-            <tr>
-              <td>Home video still</td>
-              <td>The still picture while the video loads. Also used when the page is shared.</td>
+              <td>Home video</td>
+              <td>MP4, under 20 MB, 10–30 seconds. Sound is never played.</td>
             </tr>
           </tbody>
         </table>
 
-        <h2>3. Products — the Products page</h2>
+        <h2>6. What you cannot change here</h2>
         <p>
-          Each honey is a card on
-          <a href="https://kwanyuki.it/en/products/">/products</a>. There is no separate
-          product page.
-        </p>
-        <table>
-          <thead>
-            <tr>
-              <th>Field</th>
-              <th>What you see</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Name</td>
-              <td>The large name on the card.</td>
-            </tr>
-            <tr>
-              <td>Web address</td>
-              <td>Click Generate. It is not shown. Do not change it later.</td>
-            </tr>
-            <tr>
-              <td>Short text</td>
-              <td>The two or three lines under the name.</td>
-            </tr>
-            <tr>
-              <td>Price</td>
-              <td>The price at the top right of the card.</td>
-            </tr>
-            <tr>
-              <td>Photo</td>
-              <td>The picture on the card. Photo description is for people who cannot see the image.</td>
-            </tr>
-          </tbody>
-        </table>
-        <p>
-          Italian, French, and English need <strong>three copies</strong> of the same
-          product (one per language). Use the language menu on the document.
-        </p>
-        <p>
-          Note: if you publish even one real product, the sample cards disappear.
-        </p>
-
-        <h2>4. News — the News page</h2>
-        <p>
-          The list is at <a href="https://kwanyuki.it/en/news/">/news</a>. The long text
-          appears only after someone clicks a story.
-        </p>
-        <table>
-          <thead>
-            <tr>
-              <th>Field</th>
-              <th>What you see</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Title</td>
-              <td>The headline on the list and at the top of the article.</td>
-            </tr>
-            <tr>
-              <td>Web address</td>
-              <td>Click Generate. This becomes the article link. Do not change it later, or the old link breaks.</td>
-            </tr>
-            <tr>
-              <td>Short text</td>
-              <td>The summary on the list (not the full article).</td>
-            </tr>
-            <tr>
-              <td>Date</td>
-              <td>The date on the card. Newest stories sit at the top.</td>
-            </tr>
-            <tr>
-              <td>Photo</td>
-              <td>The picture on the list and at the top of the article.</td>
-            </tr>
-            <tr>
-              <td>Full text</td>
-              <td>The story, only on the article page.</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h2>5. What you cannot change here</h2>
-        <p>
-          The menu, Home page titles and story, and the Contact address and hours are
-          not in Sanity. Ask us to change those.
+          The menu items and the page structure are not in Sanity. Ask us to change those.
         </p>
       </div>
     </main>

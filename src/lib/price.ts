@@ -15,8 +15,10 @@ export type ParsedPrice = {
  * currency symbol is present, since the shop only sells in EUR. Returns null
  * when the string doesn't actually contain a number (e.g. "su richiesta"), so
  * callers can fall back to showing it unchanged instead of mangling free text.
+ * An empty field (the price is optional in Sanity) also returns null.
  */
-export function parsePrice(raw: string): ParsedPrice | null {
+export function parsePrice(raw: string | null | undefined): ParsedPrice | null {
+  if (!raw) return null;
   const match = raw.match(/([€$£])?\s*(\d+(?:[.,]\d+)?)\s*([€$£])?/);
   if (!match) return null;
   const symbol = match[1] || match[3] || "€";
@@ -30,7 +32,7 @@ export function parsePrice(raw: string): ParsedPrice | null {
 }
 
 /** Formats a raw price field for display, e.g. "18" -> "18 €", "€18" -> "18 €". */
-export function formatPrice(raw: string): string {
+export function formatPrice(raw: string | null | undefined): string {
   const parsed = parsePrice(raw);
-  return parsed ? `${parsed.displayValue} ${parsed.symbol}` : raw;
+  return parsed ? `${parsed.displayValue} ${parsed.symbol}` : (raw ?? "");
 }

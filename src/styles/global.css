@@ -10,12 +10,26 @@
 
   --color-honey: #e3a638;
   --color-honey-bright: #f2b84b;
+  /* Honey dark enough for small text on white/wax (5.1:1); honey itself is 2.1:1. */
+  --color-honey-ink: #94640f;
   --color-wax: #fcf9f2;
   --color-charcoal: #2d2926;
   --color-sage: #4a5d4e;
   --color-midnight: #121212;
   --color-soft: #e0e0e0;
   --color-card-dark: #1e1e1e;
+}
+
+/* Sage text is 2.6:1 on the dark background; this lighter sage reads 6.6:1.
+   Overriding the variable fixes every text-sage at once. */
+.dark {
+  --color-sage: #86a08c;
+}
+
+/* Unlayered on purpose: inside @layer base this lost to the header's text-charcoal
+   utility, so in light mode the nav stayed dark over the dark home video. */
+#site-header[data-transparent="true"]:not(.is-scrolled) {
+  color: #fff;
 }
 
 @layer base {
@@ -47,10 +61,6 @@
 
   .dark #site-header .logo-word {
     color: var(--color-soft);
-  }
-
-  #site-header[data-transparent="true"]:not(.is-scrolled) {
-    color: #fff;
   }
 
   #site-header[data-transparent="true"]:not(.is-scrolled) .logo-word {

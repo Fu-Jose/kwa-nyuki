@@ -1,0 +1,48 @@
+---
+import ShopDetails from "./ShopDetails.astro";
+import type { Lang } from "../i18n/ui";
+import type { SiteSettings } from "../content/fallback";
+import { useTranslations } from "../i18n/utils";
+import { getContactDetails } from "../lib/contact.ts";
+
+interface Props {
+  lang: Lang;
+  settings: SiteSettings;
+  /** Two columns with a large heading (Home) instead of a stacked side card (Products). */
+  wide?: boolean;
+}
+
+const { lang, settings, wide = false } = Astro.props;
+const t = useTranslations(lang);
+const { email } = getContactDetails(settings, lang);
+const mailto = `mailto:${email}?subject=${encodeURIComponent(t.shop.emailSubject)}`;
+---
+
+<section
+  aria-labelledby="how-to-buy"
+  class:list={[wide && "grid gap-10 md:grid-cols-2 md:items-start md:gap-16"]}
+>
+  <div>
+    <h2 id="how-to-buy" class:list={["font-serif", wide ? "text-4xl md:text-5xl" : "text-2xl"]}>
+      {t.shop.title}
+    </h2>
+    <p
+      class:list={[
+        "leading-relaxed text-charcoal/80 dark:text-soft/80",
+        wide ? "mt-6 max-w-md text-base leading-8" : "mt-3 text-sm",
+      ]}
+    >
+      {t.shop.intro}
+    </p>
+    <a
+      href={mailto}
+      class:list={[
+        "mt-6 flex min-h-11 items-center justify-center bg-charcoal px-6 text-xs uppercase tracking-[0.25em] text-wax transition-colors hover:bg-honey-ink dark:bg-soft dark:text-midnight dark:hover:bg-honey-bright",
+        wide && "w-fit",
+      ]}
+    >
+      {t.shop.cta}
+    </a>
+  </div>
+  <ShopDetails lang={lang} settings={settings} emailSubject={t.shop.emailSubject} className={wide ? "" : "mt-6"} />
+</section>

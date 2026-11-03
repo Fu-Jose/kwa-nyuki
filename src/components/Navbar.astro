@@ -11,9 +11,10 @@ interface Props {
   lang: Lang;
   transparent?: boolean;
   settings: SiteSettings;
+  languageLinks: Record<Lang, string>;
 }
 
-const { lang, transparent = false, settings } = Astro.props;
+const { lang, transparent = false, settings, languageLinks } = Astro.props;
 const t = useTranslations(lang);
 const links = getNavLinks(lang);
 ---
@@ -41,7 +42,7 @@ const links = getNavLinks(lang);
     </nav>
 
     <div class="relative z-50 flex items-center gap-1">
-      <LanguageSwitcher lang={lang} className="hidden md:flex" />
+      <LanguageSwitcher lang={lang} links={languageLinks} className="hidden md:flex" />
       <ThemeToggle lang={lang} />
       <button
         type="button"
@@ -63,7 +64,7 @@ const links = getNavLinks(lang);
   </div>
 </header>
 
-<MobileMenu lang={lang} />
+<MobileMenu lang={lang} languageLinks={languageLinks} />
 
 <style>
   .hamburger {
@@ -155,6 +156,15 @@ const links = getNavLinks(lang);
     menu.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", () => setOpen(false), { signal });
     });
+    document.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.key !== "Escape" || !isMenuOpen) return;
+        setOpen(false);
+        toggle.focus();
+      },
+      { signal },
+    );
   }
 
   bindNav();

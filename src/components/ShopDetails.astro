@@ -1,0 +1,55 @@
+---
+import type { Lang } from "../i18n/ui";
+import type { SiteSettings } from "../content/fallback";
+import { useTranslations } from "../i18n/utils";
+import { getContactDetails } from "../lib/contact.ts";
+
+interface Props {
+  lang: Lang;
+  settings: SiteSettings;
+  /** Pre-filled email subject, e.g. on the Products page. */
+  emailSubject?: string;
+  className?: string;
+}
+
+const { lang, settings, emailSubject, className = "" } = Astro.props;
+const t = useTranslations(lang);
+
+const { address, hours, email, phone } = getContactDetails(settings, lang);
+const mailto = emailSubject ? `mailto:${email}?subject=${encodeURIComponent(emailSubject)}` : `mailto:${email}`;
+const directions = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`;
+
+// Links get a 44px-tall hit area; the underline makes them read as links without colour.
+const linkClass =
+  "inline-flex min-h-11 items-center underline decoration-charcoal/30 underline-offset-4 transition-colors hover:decoration-current dark:decoration-soft/30";
+---
+
+<dl class:list={["space-y-5 text-sm leading-7", className]}>
+  <div>
+    <dt class="uppercase tracking-[0.2em] text-sage">{t.contact.addressLabel}</dt>
+    <dd class="mt-1">{address}</dd>
+    <dd>
+      <a class={linkClass} href={directions} target="_blank" rel="noopener">{t.contact.directions}</a>
+    </dd>
+  </div>
+  <div>
+    <dt class="uppercase tracking-[0.2em] text-sage">{t.contact.hoursLabel}</dt>
+    <dd class="mt-1">{hours}</dd>
+  </div>
+  <div>
+    <dt class="uppercase tracking-[0.2em] text-sage">{t.contact.emailLabel}</dt>
+    <dd><a class={linkClass} href={mailto}>{email}</a></dd>
+  </div>
+  {
+    phone && (
+      <div>
+        <dt class="uppercase tracking-[0.2em] text-sage">{t.contact.phoneLabel}</dt>
+        <dd>
+          <a class={linkClass} href={`tel:${phone.replace(/[^\d+]/g, "")}`}>
+            {phone}
+          </a>
+        </dd>
+      </div>
+    )
+  }
+</dl>
