@@ -29,10 +29,13 @@ Source: the client's own articles in Sanity: "Il progetto Kwa Nyuki", "La nostra
 ## Operating Context
 - **Stack:** Astro static site on Vercel, Sanity CMS with document-level translations (it/fr/en). Content goes live after a rebuild once the client presses "Pubblica". Whether that rebuild is automatic depends on a Sanity → Vercel webhook that has not been confirmed.
 - **Client guide:** `public/guida.html` explains the Studio to the client and must stay consistent with the Studio's labels.
+- **URLs:** Italian is the main language and lives at the root with Italian words (`/prodotti/`, `/notizie/`, `/contatti/`, `/privacy/`). English and French sit under `/en/` and `/fr/` with their own words. Old `/it/…` and `/fr/products|news` URLs redirect permanently in `vercel.json`.
+- **Security headers:** set in `vercel.json`. The CSP allows `'unsafe-inline'` scripts because Astro's built-in CSP does not work with `<ClientRouter />`.
 
 ## Capabilities and Constraints
 - **Products:** sold in the farm shop or on request, never online. Prices are entered in Sanity.
-- **Editable in Site Settings:** address (one for all languages), shop hours (per language), email and phone. The phone is shown only when set.
+- **Editable in Site Settings:** address (one for all languages), shop hours (per language, empty falls back to Italian), email and phone (shown only when set), business name and Partita IVA (footer, privacy page, structured data), and the page titles Google shows (empty keeps the defaults in `ui.ts`).
+- **Open: privacy policy.** `src/i18n/privacy.ts` is a draft written from how the site works. A privacy consultant must review it before launch, and it needs the real business name, P.IVA and address.
 - **Editable in "Pagina Home"** (one per language): the hero title, subtitle and button text, and the story title, text and photo. Every empty field keeps the built-in copy from `src/i18n/ui.ts`.
 - **Open: farm location.** "Via delle Api 12, 53024 Montalcino" is a **placeholder**. The real address is not known yet; the client will replace it in Sanity. Do not use the location as a fact in new copy. The map and directions follow whatever address is set.
 - **Open: email.** The address `hello@kwanyuki.com` does not match the `.it` domain. Not confirmed with the client.

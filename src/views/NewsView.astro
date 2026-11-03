@@ -1,31 +1,31 @@
 ---
-import Layout from "../../../layouts/Layout.astro";
-import NewsCard from "../../../components/NewsCard.astro";
-import { locales, type Lang } from "../../../i18n/ui";
-import { isLang, localizedPath, useTranslations } from "../../../i18n/utils";
-import { getNews, getSiteSettings } from "../../../lib/sanity.ts";
-import type { NewsItem } from "../../../content/fallback";
+import Layout from "../layouts/Layout.astro";
+import NewsCard from "../components/NewsCard.astro";
+import type { Lang } from "../i18n/ui";
+import { isLang, pageAlternates, pagePath, useTranslations } from "../i18n/utils";
+import { getNews, getSiteSettings } from "../lib/sanity.ts";
+import { getPageTitle } from "../lib/contact.ts";
+import type { NewsItem } from "../content/fallback";
 
-export function getStaticPaths() {
-  return locales.map((lang) => ({ params: { lang } }));
+interface Props {
+  lang: Lang;
 }
 
-const { lang: rawLang } = Astro.params;
-if (!isLang(rawLang)) return Astro.redirect("/it/news/");
-const lang = rawLang as Lang;
+const { lang } = Astro.props;
 const t = useTranslations(lang);
 const [items, settings] = await Promise.all([getNews(lang), getSiteSettings()]);
 const [featured, ...rest] = items;
 // An Italian article standing in for a missing translation links to its own (Italian) page.
-const hrefFor = (item: NewsItem) => localizedPath(isLang(item.language) ? item.language : lang, `/news/${item.slug}/`);
+const hrefFor = (item: NewsItem) => pagePath(isLang(item.language) ? item.language : lang, "news", item.slug);
 const hasUntranslated = items.some((item) => item.language && item.language !== lang);
 ---
 
 <Layout
   lang={lang}
-  title={t.nav.news}
+  title={getPageTitle(settings, "news", lang)}
   description={t.news.description}
   settings={settings}
+  alternates={pageAlternates("news")}
 >
   <section class="mx-auto max-w-6xl px-5 pb-24 pt-32 md:px-8">
     <h1 class="font-serif text-5xl md:text-6xl">{t.news.title}</h1>

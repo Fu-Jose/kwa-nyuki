@@ -3,33 +3,39 @@ import { ClientRouter } from "astro:transitions";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 import "../styles/global.css";
-import { locales, defaultLang, type Lang } from "../i18n/ui";
+import { locales, defaultLang, siteName, type Lang } from "../i18n/ui";
 import type { SiteSettings } from "../content/fallback";
-import { localizedPath, switchLangPath, useTranslations } from "../i18n/utils";
-import { getContactDetails } from "../lib/contact.ts";
+import { pagePath, useTranslations, type PageKey } from "../i18n/utils";
+import { getBusinessDetails, getContactDetails } from "../lib/contact.ts";
+import { sanityImageUrl } from "../lib/sanity.ts";
 
 interface Props {
   lang: Lang;
+  /** Full document title, brand included (e.g. "Il nostro miele · Kwa Nyuki"). */
   title: string;
   description?: string;
   transparentNav?: boolean;
   settings: SiteSettings;
   /** Absolute or root-relative image used for Open Graph / Twitter cards. Defaults to the site's hero poster. */
   image?: string;
+  /** Description of the share image for screen readers on social platforms. */
+  imageAlt?: string;
+  /** Article dates (ISO) for Open Graph, on news pages. */
+  publishedTime?: string;
+  modifiedTime?: string;
   /** Open Graph type. Use "article" on blog/news detail pages. */
   type?: "website" | "article";
   /**
-   * Per-language paths (root-relative, e.g. "/en/news/spring-harvest/") for hreflang alternates.
-   * Omit on pages whose path shape is identical across languages (home, products, contact, news index) —
-   * it is then derived automatically. Pages with per-language slugs (e.g. a news article) MUST pass this
-   * explicitly, since guessing a translated slug would produce a broken hreflang link.
+   * This page in each language (root-relative, e.g. "/en/news/spring-harvest/"), for hreflang and
+   * the language switcher. Static pages pass pageAlternates(page); an article passes only its real,
+   * published translations. Defaults to this page alone.
    */
   alternates?: Partial<Record<Lang, string>>;
   /**
-   * Where the language switcher sends a language missing from `alternates` (e.g. "/news/" for an
+   * Where the language switcher sends a language missing from `alternates` (e.g. "news" for an
    * article not translated yet), instead of a guessed URL that would 404. Defaults to the home page.
    */
-  untranslatedPath?: string;
+  untranslatedPage?: PageKey;
   /** Set true on pages that should not be indexed (e.g. a 404). */
   noindex?: boolean;
   /** One or more JSON-LD structured data objects to embed. */
@@ -45,9 +51,12 @@ const {
   transparentNav = false,
   settings,
   image,
+  imageAlt,
+  publishedTime,
+  modifiedTime,
   type = "website",
   alternates,
-  untranslatedPath = "/",
+  untranslatedPage = "home",
   noindex = false,
   structuredData,
   hideChrome = false,
@@ -57,20 +66,16 @@ const t = useTranslations(lang);
 const canonicalPath = Astro.url.pathname;
 const canonicalURL = new URL(canonicalPath, Astro.site);
 const metaDescription = description ?? t.footer.note;
-const ogImage = image ?? settings.heroPoster;
+// Social previews: 1200×630 JPEG from Sanity (JPEG because some apps still mishandle WebP previews).
+const ogImageIsSanity = (image ?? settings.heroPoster).startsWith("https://cdn.sanity.io/");
+const ogImage = sanityImageUrl(image ?? settings.heroPoster, { w: 1200, h: 630, fit: "crop", fm: "jpg", q: 80 });
+const ogLocales: Record<Lang, string> = { it: "it_IT", en: "en_GB", fr: "fr_FR" };
 
-// hreflang alternates: explicit per-language paths win; otherwise assume the
-// path shape is shared across languages and just swap the /lang/ segment.
-const alternateEntries: [Lang, string][] = alternates
-  ? (Object.entries(alternates) as [Lang, string][])
-  : locales.map((code) => [code, switchLangPath(canonicalPath, code)]);
-const xDefaultPath = alternates
-  ? (alternates[defaultLang] ?? canonicalPath)
-  : switchLangPath(canonicalPath, defaultLang);
-
-const alternatePaths: Partial<Record<Lang, string>> = Object.fromEntries(alternateEntries);
+const alternatePaths: Partial<Record<Lang, string>> = alternates ?? { [lang]: canonicalPath };
+const alternateEntries = Object.entries(alternatePaths) as [Lang, string][];
+const xDefaultPath = alternatePaths[defaultLang] ?? canonicalPath;
 const languageLinks = Object.fromEntries(
-  locales.map((code) => [code, alternatePaths[code] ?? localizedPath(code, untranslatedPath)]),
+  locales.map((code) => [code, alternatePaths[code] ?? pagePath(code, untranslatedPage)]),
 ) as Record<Lang, string>;
 
 const jsonLdBlocks = structuredData ? (Array.isArray(structuredData) ? structuredData : [structuredData]) : [];
@@ -84,12 +89,17 @@ function toJsonLd(data: Record<string, unknown>) {
 }
 
 const contact = getContactDetails(settings, lang);
+const business = getBusinessDetails(settings);
 const localBusinessJsonLd = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  name: t.brand,
+  name: siteName,
+  ...(business.legalName !== siteName && { legalName: business.legalName }),
+  ...(business.vatNumber && { vatID: `IT${business.vatNumber}` }),
   description: t.footer.note,
   url: Astro.site?.toString(),
+  logo: new URL("/icon-512.png", Astro.site).toString(),
+  image: ogImage,
   email: contact.email,
   ...(contact.phone && { telephone: contact.phone }),
   address: {
@@ -106,6 +116,11 @@ const localBusinessJsonLd = {
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#fcf9f2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={metaDescription} />
@@ -118,45 +133,61 @@ const localBusinessJsonLd = {
     }
     <link rel="alternate" hreflang="x-default" href={new URL(xDefaultPath, Astro.site)} />
 
-    <link rel="preconnect" href="https://cdn.sanity.io" />
-    <link rel="preconnect" href="https://images.unsplash.com" />
-    <link rel="preconnect" href="https://videos.pexels.com" />
-
-    <title>{title} · {t.brand}</title>
+    <title>{title}</title>
 
     <meta property="og:type" content={type} />
-    <meta property="og:site_name" content={t.brand} />
-    <meta property="og:locale" content={lang} />
-    <meta property="og:title" content={`${title} · ${t.brand}`} />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:locale" content={ogLocales[lang]} />
+    {
+      alternateEntries
+        .filter(([code]) => code !== lang)
+        .map(([code]) => <meta property="og:locale:alternate" content={ogLocales[code]} />)
+    }
+    <meta property="og:title" content={title} />
     <meta property="og:description" content={metaDescription} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:image" content={ogImage} />
+    {ogImageIsSanity && <meta property="og:image:width" content="1200" />}
+    {ogImageIsSanity && <meta property="og:image:height" content="630" />}
+    {imageAlt && <meta property="og:image:alt" content={imageAlt} />}
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={`${title} · ${t.brand}`} />
+    <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={metaDescription} />
     <meta name="twitter:image" content={ogImage} />
+    {imageAlt && <meta name="twitter:image:alt" content={imageAlt} />}
 
     <script type="application/ld+json" set:html={toJsonLd(localBusinessJsonLd)} />
     {jsonLdBlocks.map((data) => <script type="application/ld+json" set:html={toJsonLd(data)} />)}
 
     <script is:inline>
       (function () {
+        const root = document.documentElement;
         const stored = localStorage.getItem("theme");
         const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const dark = stored ? stored === "dark" : prefersDark;
-        document.documentElement.classList.toggle("dark", dark);
+        root.classList.toggle("dark", stored ? stored === "dark" : prefersDark);
+        // Scroll reveals start hidden only when JS runs (see .reveal-on-scroll in global.css).
+        root.classList.add("js");
+        // Home preloader: once per browser session, never with reduced motion.
+        try {
+          if (sessionStorage.getItem("kwa-preloaded") || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            root.classList.add("skip-preloader");
+          }
+        } catch (e) {}
       })();
     </script>
     <ClientRouter />
   </head>
   <body class="font-sans">
+    <a href="#main" class="skip-link">{t.a11y.skip}</a>
     <!-- Full-screen overlays (the home preloader) live outside <main>: its view-transition-name
          creates a stacking context that would keep them under the fixed header. -->
     <slot name="overlay" />
     {!hideChrome && (
       <Navbar lang={lang} transparent={transparentNav} settings={settings} languageLinks={languageLinks} />
     )}
-    <main transition:animate="fade">
+    <main id="main" tabindex="-1" class="outline-none" transition:animate="fade">
       <slot />
     </main>
     {!hideChrome && <Footer lang={lang} settings={settings} />}

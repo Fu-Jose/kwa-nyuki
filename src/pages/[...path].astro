@@ -1,0 +1,49 @@
+---
+// Single router for every page of the site. Italian lives at the root ("/", "/prodotti/"),
+// the other languages under their prefix ("/en/products/", "/fr/produits/"); the URL
+// segments come from pagePath() in i18n/utils.ts. Each page's content is a view in src/views.
+import HomeView from "../views/HomeView.astro";
+import ProductsView from "../views/ProductsView.astro";
+import NewsView from "../views/NewsView.astro";
+import ArticleView from "../views/ArticleView.astro";
+import ContactView from "../views/ContactView.astro";
+import PrivacyView from "../views/PrivacyView.astro";
+import { locales, type Lang } from "../i18n/ui";
+import { pageKeys, pagePath, type PageKey } from "../i18n/utils";
+import { getNews } from "../lib/sanity.ts";
+
+interface Props {
+  lang: Lang;
+  page: PageKey | "article";
+  slug?: string;
+}
+
+export async function getStaticPaths() {
+  const toParam = (path: string) => path.replace(/^\/|\/$/g, "") || undefined;
+  const paths = [];
+  for (const lang of locales) {
+    for (const page of pageKeys) {
+      paths.push({ params: { path: toParam(pagePath(lang, page)) }, props: { lang, page } });
+    }
+    // An article gets a page only in its own language: an Italian article listed under
+    // /en/ because it is not translated yet links to its Italian page instead.
+    for (const item of await getNews(lang)) {
+      if ((item.language ?? lang) !== lang) continue;
+      paths.push({
+        params: { path: toParam(pagePath(lang, "news", item.slug)) },
+        props: { lang, page: "article", slug: item.slug },
+      });
+    }
+  }
+  return paths;
+}
+
+const { lang, page, slug } = Astro.props;
+---
+
+{page === "home" && <HomeView lang={lang} />}
+{page === "products" && <ProductsView lang={lang} />}
+{page === "news" && <NewsView lang={lang} />}
+{page === "article" && slug && <ArticleView lang={lang} slug={slug} />}
+{page === "contact" && <ContactView lang={lang} />}
+{page === "privacy" && <PrivacyView lang={lang} />}

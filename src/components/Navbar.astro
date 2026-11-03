@@ -5,7 +5,7 @@ import ThemeToggle from "./ThemeToggle.astro";
 import LanguageSwitcher from "./LanguageSwitcher.astro";
 import type { Lang } from "../i18n/ui";
 import type { SiteSettings } from "../content/fallback";
-import { getNavLinks, localizedPath, useTranslations } from "../i18n/utils";
+import { getNavLinks, pagePath, useTranslations } from "../i18n/utils";
 
 interface Props {
   lang: Lang;
@@ -17,6 +17,10 @@ interface Props {
 const { lang, transparent = false, settings, languageLinks } = Astro.props;
 const t = useTranslations(lang);
 const links = getNavLinks(lang);
+// Home matches only itself; sections also cover their sub-pages (an article is in "news").
+const path = Astro.url.pathname;
+const isCurrent = (link: (typeof links)[number]) =>
+  link.page === "home" ? path === link.href : path.startsWith(link.href);
 ---
 
 <header
@@ -27,14 +31,19 @@ const links = getNavLinks(lang);
   <div
     class="mx-auto flex h-20 max-w-6xl items-center justify-between px-5 md:px-8"
   >
-    <a href={localizedPath(lang, "/")} class="relative z-50" data-astro-prefetch>
+    <a href={pagePath(lang, "home")} class="relative z-50" data-astro-prefetch>
       <Logo src={settings.logo} alt={settings.logoAlt} />
     </a>
 
-    <nav class="hidden items-center gap-8 text-sm tracking-[0.18em] uppercase md:flex" aria-label="Primary">
+    <nav class="hidden items-center gap-8 text-sm tracking-[0.18em] uppercase lg:flex" aria-label={t.a11y.navPrimary}>
       {
         links.map((link) => (
-          <a href={link.href} class="transition-opacity hover:opacity-70" data-astro-prefetch>
+          <a
+            href={link.href}
+            aria-current={isCurrent(link) ? "page" : undefined}
+            class="decoration-honey decoration-2 underline-offset-[6px] transition-opacity hover:opacity-70 aria-[current=page]:underline"
+            data-astro-prefetch
+          >
             {link.label}
           </a>
         ))
@@ -42,12 +51,12 @@ const links = getNavLinks(lang);
     </nav>
 
     <div class="relative z-50 flex items-center gap-1">
-      <LanguageSwitcher lang={lang} links={languageLinks} className="hidden md:flex" />
+      <LanguageSwitcher lang={lang} links={languageLinks} className="hidden lg:flex" />
       <ThemeToggle lang={lang} />
       <button
         type="button"
         id="menu-toggle"
-        class="relative z-50 grid size-11 place-items-center md:hidden"
+        class="relative z-50 grid size-11 place-items-center lg:hidden"
         aria-expanded="false"
         aria-controls="mobile-menu"
         aria-label={t.menu.open}

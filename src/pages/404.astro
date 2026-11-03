@@ -1,8 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Logo from "../components/Logo.astro";
-import { defaultLang, locales, type Lang } from "../i18n/ui";
-import { localizedPath, useTranslations } from "../i18n/utils";
+import { defaultLang, locales, siteName, type Lang } from "../i18n/ui";
+import { pagePath, useTranslations } from "../i18n/utils";
 import { getSiteSettings } from "../lib/sanity.ts";
 
 // Astro builds a single static 404.html for the whole site — there is no
@@ -20,14 +20,14 @@ type NotFoundCopy = { title: string; cta: string; home: string };
 const copy = Object.fromEntries(
   locales.map((code) => {
     const nf = useTranslations(code).notFound;
-    return [code, { title: nf.title, cta: nf.cta, home: localizedPath(code, "/") }];
+    return [code, { title: nf.title, cta: nf.cta, home: pagePath(code, "home") }];
   }),
 ) as Record<Lang, NotFoundCopy>;
 ---
 
 <Layout
   lang={lang}
-  title={t.notFound.title}
+  title={`${t.notFound.title} · ${siteName}`}
   noindex
   hideChrome
   settings={settings}
@@ -38,7 +38,7 @@ const copy = Object.fromEntries(
     <h1 id="nf-title" class="mt-10 font-serif text-4xl leading-tight md:text-6xl">{t.notFound.title}</h1>
     <a
       id="nf-home-link"
-      href={localizedPath(lang, "/")}
+      href={pagePath(lang, "home")}
       class="mt-10 inline-flex items-center border border-charcoal/20 px-6 py-3 text-xs uppercase tracking-[0.25em] text-charcoal transition hover:bg-charcoal hover:text-wax dark:border-white/20 dark:text-soft dark:hover:bg-white dark:hover:text-midnight"
     >
       {t.notFound.cta}

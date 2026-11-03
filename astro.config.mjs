@@ -18,11 +18,8 @@ export default defineConfig({
   },
 
   integrations: [
-    sitemap({
-      // The root "/" page only performs a redirect to "/it/" — excluding it
-      // avoids a duplicate entry alongside the real homepage.
-      filter: (page) => page !== `${site}/`,
-    }),
+    // Italian lives at "/", so the root is a real page now and belongs in the sitemap.
+    sitemap(),
   ],
 
   vite: {

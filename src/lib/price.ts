@@ -31,8 +31,18 @@ export function parsePrice(raw: string | null | undefined): ParsedPrice | null {
   };
 }
 
-/** Formats a raw price field for display, e.g. "18" -> "18 €", "€18" -> "18 €". */
-export function formatPrice(raw: string | null | undefined): string {
+/**
+ * Formats a raw price field for display in the page language: "18" -> "18 €" (it, fr) or "€18" (en);
+ * decimals are shown only when the editor typed them ("18,50" -> "18,50 €"). Free text is left as is.
+ */
+export function formatPrice(raw: string | null | undefined, lang: string): string {
   const parsed = parsePrice(raw);
-  return parsed ? `${parsed.displayValue} ${parsed.symbol}` : (raw ?? "");
+  if (!parsed) return raw ?? "";
+  const decimals = /[.,]/.test(parsed.displayValue) ? 2 : 0;
+  return new Intl.NumberFormat(lang, {
+    style: "currency",
+    currency: parsed.currency,
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }).format(Number(parsed.value));
 }

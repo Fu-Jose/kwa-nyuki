@@ -32,6 +32,17 @@ export function urlFor(source: unknown) {
   return builder?.image(source as never);
 }
 
+/**
+ * Asks Sanity's image CDN for a resized/re-encoded version of an uploaded image (e.g. WebP for
+ * browsers, a 1200×630 JPEG for social previews). Non-Sanity URLs (stock fallbacks) are returned as is.
+ */
+export function sanityImageUrl(url: string, params: Record<string, string | number>) {
+  if (!url.startsWith("https://cdn.sanity.io/")) return url;
+  const target = new URL(url);
+  for (const [key, value] of Object.entries(params)) target.searchParams.set(key, String(value));
+  return target.toString();
+}
+
 // Documents in $lang, plus Italian ones that have no published $lang translation yet: an
 // untranslated item shows in Italian instead of being missing (or replaced by sample content).
 const IN_LANGUAGE_OR_UNTRANSLATED_ITALIAN = `(
@@ -71,6 +82,7 @@ const newsBySlugQuery = groq`*[_type == "news" && language == $lang && slug.curr
   title,
   excerpt,
   publishedAt,
+  _updatedAt,
   body,
   "image": image.asset->url,
   "imageAlt": image.alt,
@@ -91,17 +103,24 @@ const settingsQuery = groq`*[_type == "siteSettings"][0] {
   email,
   phone,
   address,
-  hours
+  hours,
+  legalName,
+  vatNumber,
+  seoTitles
 }`;
 
-const homeQuery = groq`*[_type == "home" && language == $lang][0] {
-  heroTitle,
-  heroSubtitle,
-  heroButton,
-  storyTitle,
-  storyText,
-  "storyImage": storyImage.asset->url,
-  "storyImageAlt": storyImage.alt
+// Texts come from the document in $lang. The photo is not language-specific: without one in this
+// language (or without a document at all), use the Italian document's photo.
+const homeQuery = groq`{
+  ...*[_type == "home" && language == $lang][0]{ heroTitle, heroSubtitle, heroButton, storyTitle, storyText },
+  "storyImage": coalesce(
+    *[_type == "home" && language == $lang][0].storyImage.asset->url,
+    *[_type == "home" && language == "it"][0].storyImage.asset->url
+  ),
+  "storyImageAlt": coalesce(
+    *[_type == "home" && language == $lang && defined(storyImage.asset)][0].storyImage.alt,
+    *[_type == "home" && language == "it"][0].storyImage.alt
+  )
 }`;
 
 function mapProduct(item: Product): Product {

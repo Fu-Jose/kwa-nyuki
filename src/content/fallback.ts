@@ -22,6 +22,8 @@ export type NewsItem = {
   title: string;
   excerpt: string;
   publishedAt: string;
+  /** Last edit in Sanity (ISO), for the article's "modified" date. */
+  _updatedAt?: string;
   image: string;
   imageAlt: string;
   body: string;
@@ -44,6 +46,11 @@ export type SiteSettings = {
   address?: string | null;
   /** From Site Settings; shop hours written per language. */
   hours?: Partial<Record<Lang, string | null>> | null;
+  /** From Site Settings: official business name and VAT number (legal notice in the footer). */
+  legalName?: string | null;
+  vatNumber?: string | null;
+  /** From Site Settings: Google/browser title per page and language; empty = default in i18n/ui.ts. */
+  seoTitles?: Partial<Record<"home" | "products" | "news" | "contact", Partial<Record<Lang, string | null>> | null>> | null;
 };
 
 /** Editable Home texts and photo from Sanity; every field is optional (empty = built-in copy). */

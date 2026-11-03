@@ -1,0 +1,13 @@
+# Weekly dependency update PRs. Immediate security PRs also need "Dependabot security updates"
+# enabled in the repository's GitHub settings (Code security).
+# Minor/patch bumps are grouped into one PR to keep the noise down; majors come one by one.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]

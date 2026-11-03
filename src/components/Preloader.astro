@@ -63,9 +63,19 @@ const { videoId = "hero-video", logo, logoAlt } = Astro.props;
     const video = document.getElementById(videoId);
     if (!preloader) return;
 
+    // Already shown in this session, or reduced motion requested: the head script set this
+    // class before first paint, so the preloader never appears (see Layout.astro).
+    if (document.documentElement.classList.contains("skip-preloader")) {
+      preloader.classList.add("is-done", "is-gone");
+      return;
+    }
+
     const finish = () => {
       preloader.classList.add("is-done");
       window.setTimeout(() => preloader.classList.add("is-gone"), 950);
+      try {
+        sessionStorage.setItem("kwa-preloaded", "1");
+      } catch {}
     };
 
     const fallback = window.setTimeout(finish, 4000);

@@ -8,6 +8,9 @@ export type Lang = keyof typeof languages;
 
 export const defaultLang: Lang = "it";
 
+/** The business name as written in titles, social previews and structured data. */
+export const siteName = "Kwa Nyuki";
+
 export const locales = Object.keys(languages) as Lang[];
 
 export const ui = {
@@ -56,6 +59,8 @@ export const ui = {
       directions: "Get directions",
       mapTitle: "Map: how to reach the farm",
       openMap: "Open in Google Maps",
+      mapNotice: "Showing the map loads content from Google, which will receive your IP address.",
+      mapShow: "Show map",
     },
     untranslated: "Some items aren’t translated yet, so they’re shown in Italian.",
     shop: {
@@ -75,6 +80,29 @@ export const ui = {
     menu: {
       open: "Open menu",
       close: "Close menu",
+    },
+    seo: {
+      home: "Kwa Nyuki · Honey from a regenerative farm",
+      products: "Our honey · Kwa Nyuki",
+      news: "Farm journal · Kwa Nyuki",
+      contact: "Contact and farm shop · Kwa Nyuki",
+      privacy: "Privacy policy · Kwa Nyuki",
+    },
+    a11y: {
+      skip: "Skip to content",
+      navPrimary: "Main menu",
+      navMobile: "Menu",
+      languages: "Language",
+      videoPause: "Pause video",
+      videoPlay: "Play video",
+    },
+    article: {
+      back: "All news",
+      next: "Next article",
+    },
+    legal: {
+      vat: "VAT no.",
+      privacy: "Privacy",
     },
     notFound: {
       title: "Page not found…",
@@ -126,6 +154,8 @@ export const ui = {
       directions: "Indicazioni stradali",
       mapTitle: "Mappa: come raggiungere la fattoria",
       openMap: "Apri in Google Maps",
+      mapNotice: "Per mostrare la mappa vengono caricati contenuti di Google, che riceverà il vostro indirizzo IP.",
+      mapShow: "Mostra la mappa",
     },
     untranslated: "Alcuni contenuti non sono ancora tradotti e sono mostrati in italiano.",
     shop: {
@@ -145,6 +175,29 @@ export const ui = {
     menu: {
       open: "Apri menu",
       close: "Chiudi menu",
+    },
+    seo: {
+      home: "Kwa Nyuki · Miele da una fattoria rigenerativa",
+      products: "Il nostro miele · Kwa Nyuki",
+      news: "Diario della fattoria · Kwa Nyuki",
+      contact: "Contatti e bottega · Kwa Nyuki",
+      privacy: "Privacy · Kwa Nyuki",
+    },
+    a11y: {
+      skip: "Vai al contenuto",
+      navPrimary: "Menu principale",
+      navMobile: "Menu",
+      languages: "Lingua",
+      videoPause: "Metti in pausa il video",
+      videoPlay: "Riproduci il video",
+    },
+    article: {
+      back: "Tutte le notizie",
+      next: "Articolo successivo",
+    },
+    legal: {
+      vat: "P.IVA",
+      privacy: "Privacy",
     },
     notFound: {
       title: "Pagina non trovata…",
@@ -196,6 +249,8 @@ export const ui = {
       directions: "Itinéraire",
       mapTitle: "Carte : comment rejoindre la ferme",
       openMap: "Ouvrir dans Google Maps",
+      mapNotice: "Afficher la carte charge du contenu de Google, qui recevra votre adresse IP.",
+      mapShow: "Afficher la carte",
     },
     untranslated: "Certains contenus ne sont pas encore traduits : ils sont affichés en italien.",
     shop: {
@@ -215,6 +270,29 @@ export const ui = {
     menu: {
       open: "Ouvrir le menu",
       close: "Fermer le menu",
+    },
+    seo: {
+      home: "Kwa Nyuki · Miel d’une ferme régénératrice",
+      products: "Notre miel · Kwa Nyuki",
+      news: "Journal de la ferme · Kwa Nyuki",
+      contact: "Contact et boutique · Kwa Nyuki",
+      privacy: "Confidentialité · Kwa Nyuki",
+    },
+    a11y: {
+      skip: "Aller au contenu",
+      navPrimary: "Menu principal",
+      navMobile: "Menu",
+      languages: "Langue",
+      videoPause: "Mettre la vidéo en pause",
+      videoPlay: "Lire la vidéo",
+    },
+    article: {
+      back: "Toutes les actualités",
+      next: "Article suivant",
+    },
+    legal: {
+      vat: "N° TVA",
+      privacy: "Confidentialité",
     },
     notFound: {
       title: "Page introuvable…",

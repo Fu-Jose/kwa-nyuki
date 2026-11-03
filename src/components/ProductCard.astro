@@ -2,22 +2,33 @@
 import { Image } from "astro:assets";
 import type { Product } from "../content/fallback";
 import { formatPrice } from "../lib/price.ts";
+import type { Lang } from "../i18n/ui";
 
 interface Props {
   product: Product;
+  /** Page language: the price is formatted for it ("18 €" / "€18"). */
+  lang: Lang;
   /** 2 on the Products page (under its h1), 3 inside a Home section (under an h2). */
   headingLevel?: 2 | 3;
 }
 
-const { product, headingLevel = 2 } = Astro.props;
+const { product, lang, headingLevel = 2 } = Astro.props;
 const Heading = headingLevel === 3 ? "h3" : "h2";
-const price = formatPrice(product.price);
+const price = formatPrice(product.price, lang);
 ---
 
 <!-- Compact catalogue card. Not a link (products are bought at the shop), so no hover lift or zoom. -->
 <article lang={product.language} class="overflow-hidden rounded-xl bg-white shadow-[0_8px_24px_-18px_rgba(45,41,38,0.4)] dark:bg-card-dark">
   <div class="aspect-square overflow-hidden">
-    <Image src={product.image} alt={product.imageAlt} width={600} height={600} class="h-full w-full object-cover" />
+    <Image
+      src={product.image}
+      alt={product.imageAlt}
+      width={600}
+      height={600}
+      widths={[300, 600]}
+      sizes="(min-width: 1024px) 270px, (min-width: 640px) 33vw, 50vw"
+      class="h-full w-full object-cover"
+    />
   </div>
   <div class="p-4 sm:p-5">
     <Heading class="font-serif text-lg leading-snug sm:text-xl">{product.title}</Heading>

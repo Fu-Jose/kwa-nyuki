@@ -1,0 +1,85 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ShopDetails from "../components/ShopDetails.astro";
+import { MapPin } from "@lucide/astro";
+import type { Lang } from "../i18n/ui";
+import { pageAlternates, useTranslations } from "../i18n/utils";
+import { getSiteSettings } from "../lib/sanity.ts";
+import { getContactDetails, getPageTitle } from "../lib/contact.ts";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const settings = await getSiteSettings();
+// The map follows the address (Site Settings, else ui.ts), so it moves when the client updates it.
+const { address } = getContactDetails(settings, lang);
+const place = encodeURIComponent(address);
+---
+
+<Layout
+  lang={lang}
+  title={getPageTitle(settings, "contact", lang)}
+  description={`${t.contact.title} ${address}`}
+  settings={settings}
+  alternates={pageAlternates("contact")}
+>
+  <section class="mx-auto grid max-w-6xl gap-12 px-5 pb-24 pt-32 md:grid-cols-2 md:px-8">
+    <div>
+      <h1 class="font-serif text-5xl md:text-6xl">{t.contact.title}</h1>
+      <ShopDetails lang={lang} settings={settings} className="mt-10" />
+    </div>
+    <div class="flex flex-col gap-3">
+      <!-- Click-to-load: nothing is requested from Google (no IP, no cookies) until the visitor asks
+           for the map, so the site needs no cookie banner. The script swaps in the iframe. -->
+      <div
+        id="map-frame"
+        class="relative min-h-[420px] flex-1 overflow-hidden rounded-3xl border border-charcoal/10 dark:border-white/10"
+        data-src={`https://maps.google.com/maps?q=${place}&z=14&output=embed`}
+        data-title={t.contact.mapTitle}
+      >
+        <div class="absolute inset-0 flex flex-col items-center justify-center gap-5 bg-charcoal/[0.03] p-8 text-center dark:bg-white/[0.03]">
+          <MapPin class="size-8 text-honey-ink dark:text-honey-bright" aria-hidden="true" />
+          <p class="max-w-xs text-sm leading-relaxed text-charcoal/80 dark:text-soft/80">{t.contact.mapNotice}</p>
+          <button
+            type="button"
+            id="map-load"
+            class="min-h-11 bg-charcoal px-6 text-xs uppercase tracking-[0.25em] text-wax transition-colors hover:bg-honey-ink dark:bg-soft dark:text-midnight dark:hover:bg-honey-bright"
+          >
+            {t.contact.mapShow}
+          </button>
+        </div>
+      </div>
+      <a
+        class="inline-flex min-h-11 items-center self-start text-sm underline decoration-charcoal/30 underline-offset-4 hover:decoration-current dark:decoration-soft/30"
+        href={`https://www.google.com/maps/search/?api=1&query=${place}`}
+        target="_blank"
+        rel="noopener"
+      >
+        {t.contact.openMap}
+      </a>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  function bindMap() {
+    const frame = document.getElementById("map-frame");
+    const button = document.getElementById("map-load");
+    if (!frame || !button) return;
+    button.onclick = () => {
+      const iframe = document.createElement("iframe");
+      iframe.src = frame.dataset.src ?? "";
+      iframe.title = frame.dataset.title ?? "";
+      iframe.className = "absolute inset-0 h-full w-full";
+      iframe.referrerPolicy = "no-referrer-when-downgrade";
+      frame.replaceChildren(iframe);
+      iframe.focus();
+    };
+  }
+
+  bindMap();
+  document.addEventListener("astro:page-load", bindMap);
+</script>

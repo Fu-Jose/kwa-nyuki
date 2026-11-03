@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { ui } from "../src/i18n/ui";
 
 // Field titles and descriptions are written for the client (Italian, non-technical):
 // each one says where it shows on the site and which file format it expects.
@@ -11,6 +12,14 @@ export const LANGUAGES = [
   { id: "fr", title: "Francese" },
   { id: "en", title: "Inglese" },
 ];
+
+// Pages whose Google title the client can override; the defaults come from src/i18n/ui.ts (seo.*).
+const SEO_PAGES = [
+  { name: "home", title: "Home", where: "Home (quella con il video)" },
+  { name: "products", title: "Prodotti", where: "Prodotti" },
+  { name: "news", title: "Notizie", where: "Notizie (l'elenco degli articoli)" },
+  { name: "contact", title: "Contatti", where: "Contatti" },
+] as const;
 
 const languageLabel = (language?: string) =>
   LANGUAGES.find(({ id }) => id === language)?.title ?? "Lingua non impostata";
@@ -250,7 +259,7 @@ export const home = defineType({
       name: "storyImage",
       title: "Foto del racconto",
       fieldset: "story",
-      description: `La foto accanto al racconto. Viene mostrata in formato orizzontale (4:3): meglio una foto orizzontale, larga almeno 1200 pixel. Potete cambiarla quando volete per vedere come sta. ${PHOTO_FORMAT_HINT}`,
+      description: `La foto accanto al racconto. Viene mostrata in formato orizzontale (4:3): meglio una foto orizzontale, larga almeno 1200 pixel. Potete cambiarla quando volete per vedere come sta. Basta caricarla nella versione italiana: le versioni in francese e inglese senza foto usano la stessa. ${PHOTO_FORMAT_HINT}`,
       type: "image",
       options: { accept: PHOTO_FORMATS },
       fields: [photoAltField],
@@ -270,7 +279,15 @@ export const siteSettings = defineType({
     { name: "brand", title: "Logo" },
     { name: "homeVideo", title: "Video in cima alla Home" },
     { name: "contact", title: "Contatti" },
+    { name: "business", title: "Dati dell'attività" },
     { name: "social", title: "Profili social" },
+    {
+      name: "seo",
+      title: "Titoli per Google",
+      description:
+        "Il titolo di ogni pagina come appare nei risultati di Google e nella scheda del browser. Non cambia le voci del menu. Ogni campo vuoto usa il titolo scritto in grigio.",
+      options: { collapsible: true, collapsed: true },
+    },
   ],
   fields: [
     defineField({
@@ -345,7 +362,7 @@ export const siteSettings = defineType({
       title: "Orari della bottega",
       fieldset: "contact",
       description:
-        "Quando si può venire a comprare in fattoria, scritto per ogni lingua, ad esempio «Ven–Dom, 10:00–18:00». Una lingua lasciata vuota mostra gli orari attuali del sito.",
+        "Quando si può venire a comprare in fattoria, scritto per ogni lingua, ad esempio «Ven–Dom, 10:00–18:00». Una lingua lasciata vuota mostra gli orari scritti in italiano.",
       type: "object",
       options: { collapsible: false },
       fields: [
@@ -391,6 +408,48 @@ export const siteSettings = defineType({
       description:
         "Incollate l'indirizzo completo della vostra pagina, ad esempio https://www.facebook.com/kwanyuki. Compare come icona in fondo a ogni pagina. Lasciate vuoto per nascondere l'icona.",
       type: "url",
+    }),
+    defineField({
+      name: "legalName",
+      title: "Ragione sociale",
+      fieldset: "business",
+      description:
+        "Il nome ufficiale dell'attività, come sulla visura o in fattura (ad esempio «Azienda Agricola Rossi Maria»). Compare in fondo a ogni pagina accanto alla Partita IVA e nella pagina Privacy. Se lasciate vuoto resta «Kwa Nyuki».",
+      type: "string",
+    }),
+    defineField({
+      name: "vatNumber",
+      title: "Partita IVA",
+      fieldset: "business",
+      description:
+        "Le 11 cifre della Partita IVA, senza «IT» davanti. Per legge deve comparire sul sito di un'attività: la mostriamo in fondo a ogni pagina.",
+      type: "string",
+      validation: (Rule) =>
+        Rule.regex(/^\d{11}$/).error("La Partita IVA è fatta di 11 cifre, senza spazi né lettere."),
+    }),
+    defineField({
+      name: "seoTitles",
+      title: "Titoli delle pagine",
+      fieldset: "seo",
+      type: "object",
+      fields: SEO_PAGES.map(({ name, title, where }) =>
+        defineField({
+          name,
+          title,
+          description: `Il titolo della pagina ${where}. Meglio restare sotto i 60 caratteri, con il nome «Kwa Nyuki».`,
+          type: "object",
+          fields: LANGUAGES.map(({ id, title: language }) =>
+            defineField({
+              name: id,
+              title: `In ${language.toLowerCase()}`,
+              type: "string",
+              placeholder: ui[id as keyof typeof ui].seo[name],
+              validation: (Rule) =>
+                Rule.max(60).warning("Titolo lungo: Google potrebbe tagliarlo nei risultati di ricerca."),
+            }),
+          ),
+        }),
+      ),
     }),
   ],
   preview: {

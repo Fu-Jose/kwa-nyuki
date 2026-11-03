@@ -3,6 +3,8 @@
 @import "@fontsource-variable/inter";
 
 @custom-variant dark (&:where(.dark, .dark *));
+/* Short screens, e.g. a phone held sideways: the home hero tightens its text. */
+@custom-variant short (@media (max-height: 500px));
 
 @theme {
   --font-serif: "Fraunces Variable", "Fraunces", ui-serif, Georgia, serif;
@@ -33,8 +35,23 @@
 }
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  /* Keyboard focus in the site's honey instead of the browser default. */
+  :focus-visible {
+    outline: 2px solid var(--color-honey-ink);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .dark :focus-visible,
+  #site-header[data-transparent="true"]:not(.is-scrolled) :focus-visible,
+  #hero-video-toggle:focus-visible {
+    outline-color: var(--color-honey-bright);
   }
 
   html,
@@ -106,20 +123,62 @@
   }
 }
 
-.menu-link-enter {
-  animation: menu-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
+/* Scroll reveal (home): hidden only when JS is running (html.js) and motion is welcome, so the
+   content is never lost without JS. The script in HomeView adds .is-visible on entering view. */
+@media (prefers-reduced-motion: no-preference) {
+  .js .reveal-on-scroll:not(.is-visible) {
+    opacity: 0;
+    transform: translateY(40px);
+  }
 
-.reveal-on-scroll {
-  opacity: 0;
-  transform: translateY(40px);
-}
+  .reveal-on-scroll.is-visible {
+    animation: story-reveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
 
-.reveal-on-scroll.is-visible {
-  animation: story-reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  .reveal-on-scroll.reveal-delay.is-visible {
+    animation-delay: 120ms;
+  }
 }
 
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation-duration: 0.45s;
+}
+
+/* Home preloader already seen in this session, or reduced motion: never shown. */
+.skip-preloader #preloader {
+  display: none;
+}
+
+/* Visible only when reached with the keyboard (Tab from the top of the page). */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  background: var(--color-charcoal);
+  color: var(--color-wax);
+  font-size: 0.875rem;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 }
