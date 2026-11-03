@@ -2,16 +2,22 @@ import type { Lang } from '../i18n/ui';
 
 export type Product = {
   _id: string;
+  /** Language of the document; differs from the page language when an Italian item stands in for a missing translation. */
+  language?: string;
   slug: string;
   title: string;
   excerpt: string;
   price: string;
+  /** Weight or pack the price refers to, e.g. "500 g". */
+  format?: string | null;
   image: string;
   imageAlt: string;
 };
 
 export type NewsItem = {
   _id: string;
+  /** Language of the document; differs from the page language when an Italian item stands in for a missing translation. */
+  language?: string;
   slug: string;
   title: string;
   excerpt: string;
@@ -75,6 +81,7 @@ export const products: Record<Lang, Product[]> = {
       title: 'Wildflower Honey',
       excerpt: 'A sun-warmed blend from spring meadows.',
       price: '€18',
+      format: '500 g',
       image: productImage,
       imageAlt: 'Glass jar of golden honey',
     },
@@ -84,6 +91,7 @@ export const products: Record<Lang, Product[]> = {
       title: 'Acacia Honey',
       excerpt: 'Delicate, pale, and almost floral-silk.',
       price: '€22',
+      format: '500 g',
       image: farmImage,
       imageAlt: 'Bee hives in a field',
     },
@@ -93,6 +101,7 @@ export const products: Record<Lang, Product[]> = {
       title: 'Chestnut Honey',
       excerpt: 'Deep, mineral, and distinctly woodland.',
       price: '€24',
+      format: '500 g',
       image: newsImage,
       imageAlt: 'Beekeeper at work',
     },
@@ -102,6 +111,7 @@ export const products: Record<Lang, Product[]> = {
       title: 'Raw Honeycomb',
       excerpt: 'Wax, nectar, and texture — unfiltered.',
       price: '€28',
+      format: '400 g',
       image: productImage,
       imageAlt: 'Raw honeycomb and honey',
     },
@@ -113,6 +123,7 @@ export const products: Record<Lang, Product[]> = {
       title: 'Miele di millefiori',
       excerpt: 'Un blend caldo di sole dai prati di primavera.',
       price: '€18',
+      format: '500 g',
       image: productImage,
       imageAlt: 'Vasetto di miele dorato',
     },
@@ -122,6 +133,7 @@ export const products: Record<Lang, Product[]> = {
       title: 'Miele di acacia',
       excerpt: 'Delicato, chiaro, quasi seta floreale.',
       price: '€22',
+      format: '500 g',
       image: farmImage,
       imageAlt: 'Arnie in un campo',
     },
@@ -131,6 +143,7 @@ export const products: Record<Lang, Product[]> = {
       title: 'Miele di castagno',
       excerpt: 'Profondo, minerale, dal bosco.',
       price: '€24',
+      format: '500 g',
       image: newsImage,
       imageAlt: 'Apicoltore al lavoro',
     },
@@ -140,6 +153,7 @@ export const products: Record<Lang, Product[]> = {
       title: 'Favo crudo',
       excerpt: 'Cera, nettare e texture — non filtrato.',
       price: '€28',
+      format: '400 g',
       image: productImage,
       imageAlt: 'Favo e miele crudo',
     },
@@ -151,6 +165,7 @@ export const products: Record<Lang, Product[]> = {
       title: 'Miel toutes fleurs',
       excerpt: 'Un assemblage solaire des prairies de printemps.',
       price: '€18',
+      format: '500 g',
       image: productImage,
       imageAlt: 'Pot de miel doré',
     },
@@ -160,6 +175,7 @@ export const products: Record<Lang, Product[]> = {
       title: 'Miel d’acacia',
       excerpt: 'Délicat, pâle, presque soie florale.',
       price: '€22',
+      format: '500 g',
       image: farmImage,
       imageAlt: 'Ruches dans un champ',
     },
@@ -169,6 +185,7 @@ export const products: Record<Lang, Product[]> = {
       title: 'Miel de châtaignier',
       excerpt: 'Profond, minéral, nettement forestier.',
       price: '€24',
+      format: '500 g',
       image: newsImage,
       imageAlt: 'Apiculteur au travail',
     },
@@ -178,6 +195,7 @@ export const products: Record<Lang, Product[]> = {
       title: 'Rayon brut',
       excerpt: 'Cire, nectar et texture — non filtré.',
       price: '€28',
+      format: '400 g',
       image: productImage,
       imageAlt: 'Rayon de miel brut',
     },

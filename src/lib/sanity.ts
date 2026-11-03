@@ -32,18 +32,29 @@ export function urlFor(source: unknown) {
   return builder?.image(source as never);
 }
 
-const productQuery = groq`*[_type == "product" && language == $lang] | order(title asc) {
+// Documents in $lang, plus Italian ones that have no published $lang translation yet: an
+// untranslated item shows in Italian instead of being missing (or replaced by sample content).
+const IN_LANGUAGE_OR_UNTRANSLATED_ITALIAN = `(
+  language == $lang ||
+  (language == "it" && count(*[_type == "translation.metadata" && references(^._id)]
+    .translations[language == $lang && defined(value->_id)]) == 0)
+)`;
+
+const productQuery = groq`*[_type == "product" && ${IN_LANGUAGE_OR_UNTRANSLATED_ITALIAN}] | order(title asc) {
   _id,
+  language,
   "slug": slug.current,
   title,
   excerpt,
   price,
+  format,
   "image": image.asset->url,
   "imageAlt": image.alt
 }`;
 
-const newsQuery = groq`*[_type == "news" && language == $lang] | order(publishedAt desc) {
+const newsQuery = groq`*[_type == "news" && ${IN_LANGUAGE_OR_UNTRANSLATED_ITALIAN}] | order(publishedAt desc) {
   _id,
+  language,
   "slug": slug.current,
   title,
   excerpt,
@@ -101,14 +112,13 @@ function mapProduct(item: Product): Product {
   };
 }
 
+// Sample content (content/fallback.ts) is only for local development without Sanity. With Sanity
+// configured it never reaches the site: an empty section shows its empty-state text, and a failed
+// fetch throws so the build fails and Vercel keeps serving the last good deploy.
 export async function getProducts(lang: Lang): Promise<Product[]> {
   if (!client) return products[lang];
-  try {
-    const result = await client.fetch<Product[]>(productQuery, { lang });
-    return result?.length ? result.map(mapProduct) : products[lang];
-  } catch {
-    return products[lang];
-  }
+  const result = await client.fetch<Product[] | null>(productQuery, { lang });
+  return (result ?? []).map(mapProduct);
 }
 
 // A news item without a photo would make <Image> fail and stop the whole site from
@@ -123,12 +133,8 @@ function mapNews(item: NewsItem): NewsItem {
 
 export async function getNews(lang: Lang): Promise<NewsItem[]> {
   if (!client) return news[lang];
-  try {
-    const result = await client.fetch<NewsItem[]>(newsQuery, { lang });
-    return result?.length ? result.map(mapNews) : news[lang];
-  } catch {
-    return news[lang];
-  }
+  const result = await client.fetch<NewsItem[] | null>(newsQuery, { lang });
+  return (result ?? []).map(mapNews);
 }
 
 // Sample articles share one _id across languages, which stands in for the translation links.
@@ -144,12 +150,8 @@ function getFallbackNewsBySlug(lang: Lang, slug: string): NewsItem | undefined {
 
 export async function getNewsBySlug(lang: Lang, slug: string): Promise<NewsItem | undefined> {
   if (!client) return getFallbackNewsBySlug(lang, slug);
-  try {
-    const result = await client.fetch<NewsItem | null>(newsBySlugQuery, { lang, slug });
-    return result ? mapNews(result) : getFallbackNewsBySlug(lang, slug);
-  } catch {
-    return getFallbackNewsBySlug(lang, slug);
-  }
+  const result = await client.fetch<NewsItem | null>(newsBySlugQuery, { lang, slug });
+  return result ? mapNews(result) : undefined;
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {

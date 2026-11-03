@@ -4,6 +4,7 @@ import NewsCard from "../../../components/NewsCard.astro";
 import { locales, type Lang } from "../../../i18n/ui";
 import { isLang, localizedPath, useTranslations } from "../../../i18n/utils";
 import { getNews, getSiteSettings } from "../../../lib/sanity.ts";
+import type { NewsItem } from "../../../content/fallback";
 
 export function getStaticPaths() {
   return locales.map((lang) => ({ params: { lang } }));
@@ -15,6 +16,9 @@ const lang = rawLang as Lang;
 const t = useTranslations(lang);
 const [items, settings] = await Promise.all([getNews(lang), getSiteSettings()]);
 const [featured, ...rest] = items;
+// An Italian article standing in for a missing translation links to its own (Italian) page.
+const hrefFor = (item: NewsItem) => localizedPath(isLang(item.language) ? item.language : lang, `/news/${item.slug}/`);
+const hasUntranslated = items.some((item) => item.language && item.language !== lang);
 ---
 
 <Layout
@@ -25,18 +29,19 @@ const [featured, ...rest] = items;
 >
   <section class="mx-auto max-w-6xl px-5 pb-24 pt-32 md:px-8">
     <h1 class="font-serif text-5xl md:text-6xl">{t.news.title}</h1>
+    {hasUntranslated && <p class="mt-4 text-sm text-charcoal/70 dark:text-soft/70">{t.untranslated}</p>}
     {
       featured ? (
         <div class="mt-14 space-y-16">
           <NewsCard
             item={featured}
-            href={localizedPath(lang, `/news/${featured.slug}/`)}
+            href={hrefFor(featured)}
             lang={lang}
             featured
           />
           <div class="grid gap-12 md:grid-cols-2">
             {rest.map((item) => (
-              <NewsCard item={item} href={localizedPath(lang, `/news/${item.slug}/`)} lang={lang} />
+              <NewsCard item={item} href={hrefFor(item)} lang={lang} />
             ))}
           </div>
         </div>

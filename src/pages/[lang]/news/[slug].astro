@@ -9,7 +9,8 @@ export async function getStaticPaths() {
   const paths = [];
   for (const lang of locales) {
     const items = await getNews(lang);
-    for (const item of items) {
+    // Italian items standing in for a missing translation link to their Italian page; no duplicate here.
+    for (const item of items.filter((entry) => (entry.language ?? lang) === lang)) {
       paths.push({ params: { lang, slug: item.slug } });
     }
   }

@@ -57,6 +57,7 @@ export const ui = {
       mapTitle: "Map: how to reach the farm",
       openMap: "Open in Google Maps",
     },
+    untranslated: "Some items aren’t translated yet, so they’re shown in Italian.",
     shop: {
       title: "How to buy",
       intro: "Our honey is sold at the farm shop, or on request: write to us and we’ll tell you what’s available.",
@@ -126,6 +127,7 @@ export const ui = {
       mapTitle: "Mappa: come raggiungere la fattoria",
       openMap: "Apri in Google Maps",
     },
+    untranslated: "Alcuni contenuti non sono ancora tradotti e sono mostrati in italiano.",
     shop: {
       title: "Come acquistare",
       intro: "Il nostro miele si acquista in bottega, qui in fattoria, oppure su richiesta: scriveteci e vi diciamo cosa è disponibile.",
@@ -195,6 +197,7 @@ export const ui = {
       mapTitle: "Carte : comment rejoindre la ferme",
       openMap: "Ouvrir dans Google Maps",
     },
+    untranslated: "Certains contenus ne sont pas encore traduits : ils sont affichés en italien.",
     shop: {
       title: "Comment acheter",
       intro: "Notre miel s’achète à la boutique, ici à la ferme, ou sur demande : écrivez-nous et nous vous dirons ce qui est disponible.",

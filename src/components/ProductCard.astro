@@ -5,37 +5,38 @@ import { formatPrice } from "../lib/price.ts";
 
 interface Props {
   product: Product;
-  /** Lay the card out horizontally, for when it is the only product on the page. */
-  wide?: boolean;
   /** 2 on the Products page (under its h1), 3 inside a Home section (under an h2). */
   headingLevel?: 2 | 3;
 }
 
-const { product, wide = false, headingLevel = 2 } = Astro.props;
+const { product, headingLevel = 2 } = Astro.props;
 const Heading = headingLevel === 3 ? "h3" : "h2";
+const price = formatPrice(product.price);
 ---
 
-<!-- Not a link (products are bought at the shop), so no hover lift or zoom that would suggest one. -->
-<article
-  class:list={[
-    "overflow-hidden rounded-2xl bg-white shadow-[0_10px_40px_-24px_rgba(45,41,38,0.35)] dark:bg-card-dark",
-    wide && "sm:grid sm:grid-cols-2 sm:items-center",
-  ]}
->
-  <div class="aspect-[4/5] overflow-hidden">
-    <Image
-      src={product.image}
-      alt={product.imageAlt}
-      width={800}
-      height={1000}
-      class="h-full w-full object-cover"
-    />
+<!-- Compact catalogue card. Not a link (products are bought at the shop), so no hover lift or zoom. -->
+<article lang={product.language} class="overflow-hidden rounded-xl bg-white shadow-[0_8px_24px_-18px_rgba(45,41,38,0.4)] dark:bg-card-dark">
+  <div class="aspect-square overflow-hidden">
+    <Image src={product.image} alt={product.imageAlt} width={600} height={600} class="h-full w-full object-cover" />
   </div>
-  <div class:list={["space-y-2 p-6", wide && "sm:p-8"]}>
-    <div class="flex items-baseline justify-between gap-4">
-      <Heading class="font-serif text-2xl">{product.title}</Heading>
-      <span class="shrink-0 whitespace-nowrap text-sm text-honey-ink dark:text-honey-bright">{formatPrice(product.price)}</span>
-    </div>
-    <p class="text-sm leading-relaxed text-charcoal/70 dark:text-soft/70">{product.excerpt}</p>
+  <div class="p-4 sm:p-5">
+    <Heading class="font-serif text-lg leading-snug sm:text-xl">{product.title}</Heading>
+    {
+      (product.format || price) && (
+        <p class="mt-1.5 flex items-baseline gap-3 text-sm">
+          {product.format && <span class="text-charcoal/70 dark:text-soft/70">{product.format}</span>}
+          {price && (
+            <span class="ms-auto whitespace-nowrap text-honey-ink dark:text-honey-bright">{price}</span>
+          )}
+        </p>
+      )
+    }
+    {
+      product.excerpt && (
+        <p class="mt-2 line-clamp-2 text-sm leading-relaxed text-charcoal/70 max-sm:hidden dark:text-soft/70">
+          {product.excerpt}
+        </p>
+      )
+    }
   </div>
 </article>

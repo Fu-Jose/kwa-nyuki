@@ -78,8 +78,16 @@ export const product = defineType({
       name: "price",
       title: "Prezzo",
       description:
-        "Scrivete solo il numero, ad esempio 18 oppure 18,50: il simbolo € si aggiunge da solo. Si vede in alto a destra sulla scheda. Lasciate vuoto per non mostrare il prezzo.",
+        "Scrivete solo il numero, ad esempio 18 oppure 18,50: il simbolo € si aggiunge da solo. Si vede sulla scheda, accanto al formato. Lasciate vuoto per non mostrare il prezzo.",
       type: "string",
+    }),
+    defineField({
+      name: "format",
+      title: "Formato",
+      description:
+        "Il peso o la confezione a cui si riferisce il prezzo, ad esempio «250 g», «500 g» o «Favo intero». Si vede sulla scheda, accanto al prezzo. Lasciate vuoto se non serve.",
+      type: "string",
+      validation: (Rule) => Rule.max(30).warning("Testo lungo: bastano poche parole, ad esempio «500 g»."),
     }),
     defineField({
       name: "image",
@@ -92,10 +100,10 @@ export const product = defineType({
     }),
   ],
   preview: {
-    select: { title: "title", language: "language", price: "price", media: "image" },
-    prepare: ({ title, language, price, media }) => ({
+    select: { title: "title", language: "language", format: "format", price: "price", media: "image" },
+    prepare: ({ title, language, format, price, media }) => ({
       title,
-      subtitle: [languageLabel(language), price].filter(Boolean).join(" · "),
+      subtitle: [languageLabel(language), format, price].filter(Boolean).join(" · "),
       media,
     }),
   },

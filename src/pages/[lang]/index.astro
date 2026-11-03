@@ -34,7 +34,8 @@ const story = {
     "https://images.unsplash.com/photo-1473973266408-ed4e27abdd47?auto=format&fit=crop&q=80&w=1200",
   imageAlt: home.storyImage ? (home.storyImageAlt ?? "") : t.story.imageAlt,
 };
-const featured = products.slice(0, 3);
+// Up to 4: a full 2×2 on phones and one row on desktop, no orphan card.
+const featured = products.slice(0, 4);
 ---
 
 <Layout lang={lang} title={hero.title} description={hero.subtitle} transparentNav settings={settings}>
@@ -88,9 +89,9 @@ const featured = products.slice(0, 3);
             {t.products.homeLink}
           </a>
         </div>
-        <div class:list={["mt-10 grid gap-8", featured.length > 1 ? "sm:grid-cols-2 lg:grid-cols-3" : "max-w-3xl"]}>
+        <div class="mt-10 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
           {featured.map((product) => (
-            <ProductCard product={product} wide={featured.length === 1} headingLevel={3} />
+            <ProductCard product={product} headingLevel={3} />
           ))}
         </div>
       </section>
