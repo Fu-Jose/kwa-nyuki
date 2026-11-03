@@ -2,15 +2,16 @@
 interface Props {
   className?: string;
   src?: string;
-  alt?: string;
+  alt?: string | null;
 }
 
-const { className = "", src, alt = "Kwa Nyuki" } = Astro.props;
+// Sanity returns null (not undefined) for an empty description, so a default parameter would not apply.
+const { className = "", src, alt } = Astro.props;
 ---
 
 {
   src ? (
-    <img src={src} alt={alt} class:list={["h-8 w-auto", className]} />
+    <img src={src} alt={alt || "Kwa Nyuki"} class:list={["h-8 w-auto", className]} />
   ) : (
     <div class:list={["flex items-center gap-2 whitespace-nowrap font-serif text-xl font-bold min-[360px]:text-2xl", className]}>
       <svg
