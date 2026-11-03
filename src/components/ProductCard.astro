@@ -5,25 +5,36 @@ import { formatPrice } from "../lib/price.ts";
 
 interface Props {
   product: Product;
+  /** Lay the card out horizontally, for when it is the only product on the page. */
+  wide?: boolean;
+  /** 2 on the Products page (under its h1), 3 inside a Home section (under an h2). */
+  headingLevel?: 2 | 3;
 }
 
-const { product } = Astro.props;
+const { product, wide = false, headingLevel = 2 } = Astro.props;
+const Heading = headingLevel === 3 ? "h3" : "h2";
 ---
 
-<article class="group overflow-hidden rounded-2xl bg-white shadow-[0_10px_40px_-24px_rgba(45,41,38,0.35)] transition duration-500 hover:-translate-y-1.5 dark:bg-card-dark">
+<!-- Not a link (products are bought at the shop), so no hover lift or zoom that would suggest one. -->
+<article
+  class:list={[
+    "overflow-hidden rounded-2xl bg-white shadow-[0_10px_40px_-24px_rgba(45,41,38,0.35)] dark:bg-card-dark",
+    wide && "sm:grid sm:grid-cols-2 sm:items-center",
+  ]}
+>
   <div class="aspect-[4/5] overflow-hidden">
     <Image
       src={product.image}
       alt={product.imageAlt}
       width={800}
       height={1000}
-      class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
+      class="h-full w-full object-cover"
     />
   </div>
-  <div class="space-y-2 p-6">
+  <div class:list={["space-y-2 p-6", wide && "sm:p-8"]}>
     <div class="flex items-baseline justify-between gap-4">
-      <h3 class="font-serif text-2xl">{product.title}</h3>
-      <span class="text-sm text-honey dark:text-honey-bright">{formatPrice(product.price)}</span>
+      <Heading class="font-serif text-2xl">{product.title}</Heading>
+      <span class="shrink-0 whitespace-nowrap text-sm text-honey-ink dark:text-honey-bright">{formatPrice(product.price)}</span>
     </div>
     <p class="text-sm leading-relaxed text-charcoal/70 dark:text-soft/70">{product.excerpt}</p>
   </div>

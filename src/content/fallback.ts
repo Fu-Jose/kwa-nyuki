@@ -19,6 +19,8 @@ export type NewsItem = {
   image: string;
   imageAlt: string;
   body: string;
+  /** Published versions of this article in each language (only filled for a single article). */
+  translations?: { language: string; slug: string | null }[] | null;
 };
 
 export type SiteSettings = {
@@ -28,6 +30,25 @@ export type SiteSettings = {
   heroPoster: string;
   logo?: string;
   logoAlt?: string;
+  /** From Site Settings; pages fall back to the email in i18n/ui.ts when empty. */
+  email?: string | null;
+  /** From Site Settings; shown only when set. */
+  phone?: string | null;
+  /** From Site Settings; one address for every language. */
+  address?: string | null;
+  /** From Site Settings; shop hours written per language. */
+  hours?: Partial<Record<Lang, string | null>> | null;
+};
+
+/** Editable Home texts and photo from Sanity; every field is optional (empty = built-in copy). */
+export type HomePage = {
+  heroTitle?: string | null;
+  heroSubtitle?: string | null;
+  heroButton?: string | null;
+  storyTitle?: string | null;
+  storyText?: string | null;
+  storyImage?: string | null;
+  storyImageAlt?: string | null;
 };
 
 export const siteSettings: SiteSettings = {

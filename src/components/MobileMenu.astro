@@ -5,9 +5,10 @@ import { getNavLinks } from "../i18n/utils";
 
 interface Props {
   lang: Lang;
+  languageLinks: Record<Lang, string>;
 }
 
-const { lang } = Astro.props;
+const { lang, languageLinks } = Astro.props;
 const links = getNavLinks(lang);
 ---
 
@@ -32,7 +33,7 @@ const links = getNavLinks(lang);
         ))
       }
     </nav>
-    <LanguageSwitcher lang={lang} className="justify-center pb-[env(safe-area-inset-bottom)]" />
+    <LanguageSwitcher lang={lang} links={languageLinks} className="justify-center pb-[env(safe-area-inset-bottom)]" />
   </div>
 </div>
 

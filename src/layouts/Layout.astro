@@ -5,7 +5,8 @@ import Footer from "../components/Footer.astro";
 import "../styles/global.css";
 import { locales, defaultLang, type Lang } from "../i18n/ui";
 import type { SiteSettings } from "../content/fallback";
-import { switchLangPath, useTranslations } from "../i18n/utils";
+import { localizedPath, switchLangPath, useTranslations } from "../i18n/utils";
+import { getContactDetails } from "../lib/contact.ts";
 
 interface Props {
   lang: Lang;
@@ -24,6 +25,11 @@ interface Props {
    * explicitly, since guessing a translated slug would produce a broken hreflang link.
    */
   alternates?: Partial<Record<Lang, string>>;
+  /**
+   * Where the language switcher sends a language missing from `alternates` (e.g. "/news/" for an
+   * article not translated yet), instead of a guessed URL that would 404. Defaults to the home page.
+   */
+  untranslatedPath?: string;
   /** Set true on pages that should not be indexed (e.g. a 404). */
   noindex?: boolean;
   /** One or more JSON-LD structured data objects to embed. */
@@ -41,6 +47,7 @@ const {
   image,
   type = "website",
   alternates,
+  untranslatedPath = "/",
   noindex = false,
   structuredData,
   hideChrome = false,
@@ -57,7 +64,14 @@ const ogImage = image ?? settings.heroPoster;
 const alternateEntries: [Lang, string][] = alternates
   ? (Object.entries(alternates) as [Lang, string][])
   : locales.map((code) => [code, switchLangPath(canonicalPath, code)]);
-const xDefaultPath = alternates ? canonicalPath : switchLangPath(canonicalPath, defaultLang);
+const xDefaultPath = alternates
+  ? (alternates[defaultLang] ?? canonicalPath)
+  : switchLangPath(canonicalPath, defaultLang);
+
+const alternatePaths: Partial<Record<Lang, string>> = Object.fromEntries(alternateEntries);
+const languageLinks = Object.fromEntries(
+  locales.map((code) => [code, alternatePaths[code] ?? localizedPath(code, untranslatedPath)]),
+) as Record<Lang, string>;
 
 const jsonLdBlocks = structuredData ? (Array.isArray(structuredData) ? structuredData : [structuredData]) : [];
 
@@ -69,18 +83,20 @@ function toJsonLd(data: Record<string, unknown>) {
   return JSON.stringify(data).replace(/</g, "\\u003c");
 }
 
+const contact = getContactDetails(settings, lang);
 const localBusinessJsonLd = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   name: t.brand,
   description: t.footer.note,
   url: Astro.site?.toString(),
-  email: t.contact.email,
+  email: contact.email,
+  ...(contact.phone && { telephone: contact.phone }),
   address: {
     "@type": "PostalAddress",
-    streetAddress: t.contact.address,
+    streetAddress: contact.address,
   },
-  openingHours: t.contact.hours,
+  openingHours: contact.hours,
   sameAs: [settings.instagram, settings.facebook].filter(Boolean),
 };
 ---
@@ -134,7 +150,12 @@ const localBusinessJsonLd = {
     <ClientRouter />
   </head>
   <body class="font-sans">
-    {!hideChrome && <Navbar lang={lang} transparent={transparentNav} settings={settings} />}
+    <!-- Full-screen overlays (the home preloader) live outside <main>: its view-transition-name
+         creates a stacking context that would keep them under the fixed header. -->
+    <slot name="overlay" />
+    {!hideChrome && (
+      <Navbar lang={lang} transparent={transparentNav} settings={settings} languageLinks={languageLinks} />
+    )}
     <main transition:animate="fade">
       <slot />
     </main>
