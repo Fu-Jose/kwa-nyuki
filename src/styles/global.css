@@ -84,6 +84,13 @@
     color: #fff;
   }
 
+  /* The uploaded logo is dark: turn it light on dark backgrounds (dark mode, header over the
+     home video). Only right for a one-colour logo; a coloured one needs its own dark version. */
+  .dark .site-logo,
+  #site-header[data-transparent="true"]:not(.is-scrolled) .site-logo {
+    filter: invert(1);
+  }
+
   #site-header.is-scrolled {
     background: color-mix(in srgb, var(--color-wax) 78%, transparent);
     backdrop-filter: blur(18px);

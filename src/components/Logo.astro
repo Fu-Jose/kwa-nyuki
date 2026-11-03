@@ -11,7 +11,7 @@ const { className = "", src, alt } = Astro.props;
 
 {
   src ? (
-    <img src={src} alt={alt || "Kwa Nyuki"} class:list={["h-8 w-auto", className]} />
+    <img src={src} alt={alt || "Kwa Nyuki"} class:list={["site-logo h-8 w-auto", className]} />
   ) : (
     <div class:list={["flex items-center gap-2 whitespace-nowrap font-serif text-xl font-bold min-[360px]:text-2xl", className]}>
       <svg
